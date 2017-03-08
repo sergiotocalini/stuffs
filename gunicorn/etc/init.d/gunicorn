@@ -1,0 +1,116 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:              gunicorn
+# Required-Start:        $all
+# Required-Stop:         $all
+# Default-Start:         2 3 4 5
+# Default-Stop:          0 1 6
+# Short-Description:     starts the gunicorn server
+# Description:           starts gunicorn using start-stop-daemon
+### END INIT INFO
+
+#PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+NAME=gunicorn
+DESC=gunicorn
+SERVER="$2"
+GUNICORN_DAEMON=/usr/bin/gunicorn
+GUNICORN_CONF=/etc/gunicorn.d
+GUNICORN_LOG=/var/log/gunicorn
+VIRTUALENV_PATH=/etc/gunicorn.d/venvs
+RUN_AS="python"
+
+# Source function library.
+. /etc/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+# Check that networking is up.
+[ "$NETWORKING" = "no" ] && exit 0
+
+if [ -f /etc/gunicorn.conf ] ; then
+    . /etc/gunicorn.conf
+fi
+
+test -x ${GUNICORN_DAEMON} || exit 0
+
+if [ ! -d /var/run/gunicorn ]; then
+    mkdir /var/run/gunicorn
+fi
+
+start() {
+   for file in ${GUNICORN_CONF}/*.conf; do
+      :
+      set -- "${file}"
+      if [ -f ${file} ] ; then
+          . ${file}
+      fi
+
+      if [[ "${SERVER}" ]] && [[ "${SERVER}" != ${APP_NAME} ]]; then
+          continue
+      fi
+      echo -ne "\tSpawning ${APP_NAME}: ${APP_DESC}"
+      DAEMON=${GUNICORN_DAEMON}
+      if [[ "${APP_VIRTUALENV}" =~ (yes|YES) ]]; then
+	  DAEMON=${VIRTUALENV_PATH}/${APP_NAME}/bin/gunicorn
+	  source ${VIRTUALENV_PATH}/${APP_NAME}/bin/activate
+      fi
+      if [ ! -z "${APP_PROXY}" ]; then
+          export HTTP_PROXY="${APP_PROXY}"
+          export HTTPS_PROXY="${APP_PROXY}"
+          export FTP_PROXY="${APP_PROXY}"
+      fi
+      daemon --pidfile /var/run/gunicorn/${APP_NAME}.pid ${DAEMON} -e APP_SETTINGS=${APP_SETTINGS} \
+	     --pythonpath ${APP_PATH} --user ${RUN_AS} -b ${APP_BIND} -w ${APP_WORKERS} \
+	     --error-logfile ${GUNICORN_LOG}/${APP_NAME}.error.log \
+             --access-logfile ${GUNICORN_LOG}/${APP_NAME}.access.log \
+	     --log-level warning -D -p /var/run/gunicorn/${APP_NAME}.pid ${APP_MODULE}
+      if [[ "${APP_VIRTUAL_ENV}" =~ (yes|YES) ]]; then
+	  ${VIRTUALENV_PATH}/${APP_NAME}/bin/deactivate
+      fi
+      echo ""
+   done
+   return
+}
+ 
+stop() {
+    for file in ${GUNICORN_CONF}/*.conf;do
+        :
+        set -- "$file"
+        if [ -f $file ] ; then
+            . $file
+        fi
+        if [[ "$SERVER" ]] && [[ "$SERVER" != $APP_NAME ]]; then
+            continue
+        fi
+        if [ -f /var/run/gunicorn/${APP_NAME}.pid ]; then
+            echo -ne "\tKilling ${APP_NAME}: ${APP_DESC}"
+            killproc -p /var/run/gunicorn/${APP_NAME}.pid
+            echo ""
+        fi
+    done
+}
+
+case "$1" in
+    start)
+        echo "Starting $DESC"
+        start
+        ;;
+    stop)
+        echo "Stopping $APP_DESC"
+        stop
+        ;;
+    restart)
+        echo "Restarting $APP_DESC"
+        stop
+        sleep 1
+        start
+        ;;
+    *)
+        N=/etc/init.d/$NAME
+        echo "Usage: $N {start|stop|restart} [particular_server_to_restart]" >&2
+        exit 1
+        ;;
+esac
+exit 0
