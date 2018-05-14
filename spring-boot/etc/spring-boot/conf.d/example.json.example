@@ -1,0 +1,27 @@
+{
+   "id": "1",
+   "name": "example",
+   "desc": "",
+   "version": "AHEAD",
+   "home": "/opt/srv/example",
+   "exec": "/opt/srv/example/example.jar",
+   "monitoring": {
+      "enable": "yes",
+      "ws": {
+         "url": "http://localhost:8080/",
+         "codes": [200]
+      },
+      "port": [
+         8080
+      ],
+      "jmx": "no"
+   },
+   "scripts": {
+      "start": "/opt/srv/example/example.sh",
+      "stop": ""
+   },
+   "runtime": {
+      "java_home": "",
+      "java_opts": []
+   }
+}
