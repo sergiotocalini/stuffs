@@ -41,14 +41,9 @@ test -x ${GUNICORN_DAEMON} || exit 0
 [ ! -d ${GUNICORN_RUN} ] && mkdir -p ${GUNICORN_RUN}
 
 start() {
-   for file in ${GUNICORN_INCLUDE}/*.conf; do
-      :
-      set -- "${file}"
-      if [ -f ${file} ] ; then
-          . ${file}
-      fi
-
-      if [[ "${SERVER}" ]] && [[ "${SERVER}" != ${APP_NAME} ]]; then
+   for file in ${GUNICORN_INCLUDE}/*.json; do
+       APP_JSON=`jq -r `
+      if [[ -n ${SERVER} && ${SERVER} != ${APP_NAME} ]]; then
           continue
       fi
       echo -ne "\tSpawning ${APP_NAME}: ${APP_DESC}"

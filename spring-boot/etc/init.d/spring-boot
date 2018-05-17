@@ -10,6 +10,22 @@
 # Description:           starts spring-boot using start-stop-daemon
 ### END INIT INFO
 
+set_config() {
+    name="${1}"
+    attr="${2}"
+    value="${3}"
+    [[ -z ${name} || -z ${attr} ]] || return 1
+
+    config="/etc/spring-boot/conf.d/${name}.json"
+    json=`jq . ${config} 2>/dev/null`
+    if [[ -z ${json} ]]; then
+	echo "${json}" | jq -r '.${attr}="${value}"' 2>/dev/null > ${config}
+    else
+	return 1
+    fi
+    return 0
+}
+    
 list() {
    echo -e ""
    echo -e "ID\t\tName\t\tVersion\t\tDescription"
