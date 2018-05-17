@@ -10,16 +10,39 @@
 # Description:           starts spring-boot using start-stop-daemon
 ### END INIT INFO
 
-set_config() {
-    name="${1}"
-    attr="${2}"
-    value="${3}"
-    [[ -z ${name} || -z ${attr} ]] || return 1
+SPRING_INCLUDE="/etc/spring-boot/conf.d"
 
-    config="/etc/spring-boot/conf.d/${name}.json"
+get_config() {
+    params=( ${@} )
+
+    [[ -n ${params[0]} || -n ${params[1]} ]] || return 1
+
+    config="${SPRING_INCLUDE}/${params[0]}.json"
+    jq -rc .${params[1]} ${config} 2>/dev/null
+    if [[ ${?} != 0 ]]; then
+	return 1
+    fi
+    return 0
+}
+
+set_config() {
+    params=( ${@} )
+
+    [[ -n ${params[0]} || -n ${params[1]} ]] || return 1
+
+    config="${SPRING_INCLUDE}/${params[0]}.json"
+
     json=`jq . ${config} 2>/dev/null`
-    if [[ -z ${json} ]]; then
-	echo "${json}" | jq -r '.${attr}="${value}"' 2>/dev/null > ${config}
+    if [[ -n ${json} ]]; then
+        if [[ ${#params[@]} > 3 ]]; then
+            json=`echo "${json}" | jq ".${params[1]}=[]"`
+            for val in "${params[@]:2}"; do
+                json=`echo "${json}" | jq ".${params[1]}+=[${val}]"`
+            done
+        else
+	    json=`echo "${json}" | jq ".${params[1]}=\"${params[2]}\""`
+	fi
+        [[ -n ${json} ]] && echo "${json}" | jq . 2>/dev/null > ${config}
     else
 	return 1
     fi
@@ -27,12 +50,12 @@ set_config() {
 }
     
 list() {
-   echo -e ""
-   echo -e "ID\t\tName\t\tVersion\t\tDescription"
-   echo -e "--\t\t----\t\t-------\t\t-----------"
-   for x in /etc/spring-boot/conf.d/*; do
-      jq -r '[.id, .name, .version, .desc] | join("\t\t")' ${x} 2>/dev/null
-   done
+    echo -e ""
+    echo -e "ID\t\tName\t\tVersion\t\tDescription"
+    echo -e "--\t\t----\t\t-------\t\t-----------"
+    for x in /etc/spring-boot/conf.d/*; do
+	jq -r '[.id, .name, .version, .desc] | join("\t\t")' ${x} 2>/dev/null
+    done
 }
 
 case "$1" in
@@ -51,7 +74,15 @@ case "$1" in
 #        start
 #        ;;
     list)
-       list
+	list
+	;;
+    get)
+        shift
+        get_config "${@}"
+        ;;
+    set)
+        shift
+        set_config "${@}"
         ;;
     *)
         N=/etc/init.d/$NAME
