@@ -58,6 +58,20 @@ list_configs() {
         for x in /etc/spring-boot/conf.d/*.json; do
             jq -r '[.id, .name, .version, .desc] | join("\t\t")' ${x} 2>/dev/null
         done
+    elif [[ ${params[0]} == 'units' ]]; then
+        if [[ -n ${params[1]} ]]; then
+          for x in /etc/spring-boot/conf.d/*.json; do
+             name=`jq -r 'select(.name=="'${params[1]}'")|.name' ${x} 2>/dev/null`
+             if [[ ${name} == ${params[1]} ]]; then
+                echo ${x}
+                break
+             fi
+          done
+        else
+            for x in /etc/spring-boot/conf.d/*.json; do
+               echo ${x}
+            done
+        fi
     elif [[ ${params[0]} == 'json' ]]; then
         if [[ ${#params[@]} > 1 ]]; then
             properties="{ "
