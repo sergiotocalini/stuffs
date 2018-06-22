@@ -41,6 +41,7 @@ test -x ${GUNICORN_DAEMON} || exit 0
 # Check the run directory.
 [ ! -d ${GUNICORN_RUN} ] && mkdir -p ${GUNICORN_RUN}
 
+<<<<<<< HEAD
 gunicorn_start() {
    for json in ${GUNICORN_INCLUDE}/*.json; do
        attr_name=`jq -r ".name" ${json} 2>/dev/null`
@@ -73,6 +74,34 @@ gunicorn_start() {
 	   deactivate
        fi
        echo ""
+=======
+start() {
+   for file in ${GUNICORN_INCLUDE}/*.json; do
+       APP_JSON=`jq -r `
+      if [[ -n ${SERVER} && ${SERVER} != ${APP_NAME} ]]; then
+          continue
+      fi
+      echo -ne "\tSpawning ${APP_NAME}: ${APP_DESC}"
+      DAEMON=${GUNICORN_DAEMON}
+      if [[ "${APP_VIRTUALENV}" =~ (yes|YES) ]]; then
+	  DAEMON=${VIRTUALENV_PATH}/${APP_NAME}/bin/gunicorn
+	  source ${VIRTUALENV_PATH}/${APP_NAME}/bin/activate
+      fi
+      if [ ! -z "${APP_PROXY}" ]; then
+          export HTTP_PROXY="${APP_PROXY}"
+          export HTTPS_PROXY="${APP_PROXY}"
+          export FTP_PROXY="${APP_PROXY}"
+      fi
+      daemon --pidfile ${GUNICORN_RUN}/${APP_NAME}.pid ${DAEMON} -e APP_SETTINGS=${APP_SETTINGS} \
+	     --pythonpath ${APP_PATH} --user ${RUN_AS} -b ${APP_BIND} -w ${APP_WORKERS} \
+	     --error-logfile ${GUNICORN_LOG}/${APP_NAME}.error.log \
+             --access-logfile ${GUNICORN_LOG}/${APP_NAME}.access.log \
+	     --log-level warning -D -p ${GUNICORN_RUN}/${APP_NAME}.pid ${APP_MODULE}
+      if [[ "${APP_VIRTUAL_ENV}" =~ (yes|YES) ]]; then
+	  ${VIRTUALENV_PATH}/${APP_NAME}/bin/deactivate
+      fi
+      echo ""
+>>>>>>> ff0c6b66db4a115b7eb1e4ba96abb20edeca229d
    done
    return
 }

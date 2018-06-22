@@ -10,36 +10,118 @@
 # Description:           starts spring-boot using start-stop-daemon
 ### END INIT INFO
 
-list() {
-   echo -e ""
-   echo -e "ID\t\tName\t\tVersion\t\tDescription"
-   echo -e "--\t\t----\t\t-------\t\t-----------"
-   for x in /etc/spring-boot/conf.d/*; do
-      jq -r '[.id, .name, .version, .desc] | join("\t\t")' ${x} 2>/dev/null
-   done
+SPRING_INCLUDE="/etc/spring-boot/conf.d"
+
+get_config() {
+    params=( ${@} )
+
+    [[ -n ${params[0]} || -n ${params[1]} ]] || return 1
+
+    config="${SPRING_INCLUDE}/${params[0]}.json"
+    jq -rc .${params[1]} ${config} 2>/dev/null
+    if [[ ${?} != 0 ]]; then
+	return 1
+    fi
+    return 0
+}
+
+set_config() {
+    params=( ${@} )
+
+    [[ -n ${params[0]} || -n ${params[1]} ]] || return 1
+
+    config="${SPRING_INCLUDE}/${params[0]}.json"
+
+    json=`jq . ${config} 2>/dev/null`
+    if [[ -n ${json} ]]; then
+        if [[ ${#params[@]} > 3 ]]; then
+            json=`echo "${json}" | jq ".${params[1]}=[]"`
+            for val in "${params[@]:2}"; do
+                json=`echo "${json}" | jq ".${params[1]}+=[${val}]"`
+            done
+        else
+	    json=`echo "${json}" | jq ".${params[1]}=\"${params[2]}\""`
+	fi
+        [[ -n ${json} ]] && echo "${json}" | jq . 2>/dev/null > ${config}
+    else
+	return 1
+    fi
+    return 0
+}
+
+list_configs() {
+    params=( ${@} )
+    if [[ ${#params[@]} == 0 ]]; then
+        echo -e ""
+        echo -e "ID\t\tName\t\tVersion\t\tDescription"
+        echo -e "--\t\t----\t\t-------\t\t-----------"
+        for x in /etc/spring-boot/conf.d/*.json; do
+            jq -r '[.id, .name, .version, .desc] | join("\t\t")' ${x} 2>/dev/null
+        done
+    elif [[ ${params[0]} == 'units' ]]; then
+        if [[ -n ${params[1]} ]]; then
+          for x in /etc/spring-boot/conf.d/*.json; do
+             name=`jq -r 'select(.name=="'${params[1]}'")|.name' ${x} 2>/dev/null`
+             if [[ ${name} == ${params[1]} ]]; then
+                echo ${x}
+                break
+             fi
+          done
+        else
+            for x in /etc/spring-boot/conf.d/*.json; do
+               echo ${x}
+            done
+        fi
+    elif [[ ${params[0]} == 'json' ]]; then
+        if [[ ${#params[@]} > 1 ]]; then
+            properties="{ "
+            for index in ${!params[@]}; do
+		[[ ${index} -eq 0 ]] && continue
+		[[ ${params[${index}]} =~ .*\..* ]] && continue
+		properties+="${params[${index}]},"
+            done
+            properties="${properties%?} }"
+        fi
+        springboot="[ "
+        for x in /etc/spring-boot/conf.d/*.json; do
+            springboot+=`jq -rc "${properties:-.}" ${x} 2>/dev/null`
+            springboot+=","
+        done
+        springboot="${springboot%?} ]"
+        echo "{}" | jq ".=${springboot}" 2>/dev/null
+    fi
 }
 
 case "$1" in
-#    start)
-#        echo "Starting $DESC"
-#        start
-#        ;;
-#    stop)
-#        echo "Stopping $APP_DESC"
-#        stop
-#        ;;
-#    restart)
-#        echo "Restarting $APP_DESC"
-#        stop
-#        sleep 1
-#        start
-#        ;;
+    #    start)
+    #        echo "Starting $DESC"
+    #        start
+    #        ;;
+    #    stop)
+    #        echo "Stopping $APP_DESC"
+    #        stop
+    #        ;;
+    #    restart)
+    #        echo "Restarting $APP_DESC"
+    #        stop
+    #        sleep 1
+    #        start
+    #        ;;
     list)
-       list
+        shift
+	list_configs "${@}"
+	;;
+    get)
+        shift
+        get_config "${@}"
+        ;;
+    set)
+        shift
+        set_config "${@}"
         ;;
     *)
         N=/etc/init.d/$NAME
-        echo "Usage: $N {start|stop|restart|list} [app]" >&2
+        echo "Usage: $N {start|stop|restart|list}" >&2
         exit 1
         ;;
 esac
