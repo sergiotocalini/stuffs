@@ -12,7 +12,6 @@
 
 NAME=gunicorn
 DESC=gunicorn
-SERVER="$2"
 GUNICORN_DAEMON=/usr/bin/gunicorn
 GUNICORN_DIR=/etc/gunicorn
 GUNICORN_CONF=${GUNICORN_DIR}/gunicorn.conf
@@ -21,12 +20,14 @@ GUNICORN_LOG=/var/log/gunicorn
 GUNICORN_RUN=/var/run/gunicorn
 VIRTUALENV_PATH=/etc/gunicorn/venvs
 RUN_AS="python"
+APP_NAME="${2}"
 
 # Source function library.
-. /etc/init.d/functions
+# [ -f /etc/init.d/functions ] && . /etc/init.d/functions
+# [ -f /lib/lsb/init-functions ] && . /lib/lsb/init-functions
 
 # Source networking configuration.
-. /etc/sysconfig/network
+[ -f /etc/sysconfig/network ] && . /etc/sysconfig/network
 
 # Check that networking is up.
 [ "$NETWORKING" = "no" ] && exit 0
@@ -40,56 +41,54 @@ test -x ${GUNICORN_DAEMON} || exit 0
 # Check the run directory.
 [ ! -d ${GUNICORN_RUN} ] && mkdir -p ${GUNICORN_RUN}
 
-start() {
-   for file in ${GUNICORN_INCLUDE}/*.conf; do
-      :
-      set -- "${file}"
-      if [ -f ${file} ] ; then
-          . ${file}
-      fi
+gunicorn_start() {
+   for json in ${GUNICORN_INCLUDE}/*.json; do
+       attr_name=`jq -r ".name" ${json} 2>/dev/null`
+       [[ ${attr_name} != ${APP_NAME} ]] && continue       
+       attr_desc=`jq -r ".desc" ${json} 2>/dev/null`
 
-      if [[ "${SERVER}" ]] && [[ "${SERVER}" != ${APP_NAME} ]]; then
-          continue
-      fi
-      echo -ne "\tSpawning ${APP_NAME}: ${APP_DESC}"
-      DAEMON=${GUNICORN_DAEMON}
-      if [[ "${APP_VIRTUALENV}" =~ (yes|YES) ]]; then
-	  DAEMON=${VIRTUALENV_PATH}/${APP_NAME}/bin/gunicorn
-	  source ${VIRTUALENV_PATH}/${APP_NAME}/bin/activate
-      fi
-      if [ ! -z "${APP_PROXY}" ]; then
-          export HTTP_PROXY="${APP_PROXY}"
-          export HTTPS_PROXY="${APP_PROXY}"
-          export FTP_PROXY="${APP_PROXY}"
-      fi
-      daemon --pidfile ${GUNICORN_RUN}/${APP_NAME}.pid ${DAEMON} -e APP_SETTINGS=${APP_SETTINGS} \
-	     --pythonpath ${APP_PATH} --user ${RUN_AS} -b ${APP_BIND} -w ${APP_WORKERS} \
-	     --error-logfile ${GUNICORN_LOG}/${APP_NAME}.error.log \
-             --access-logfile ${GUNICORN_LOG}/${APP_NAME}.access.log \
-	     --log-level warning -D -p ${GUNICORN_RUN}/${APP_NAME}.pid ${APP_MODULE}
-      if [[ "${APP_VIRTUAL_ENV}" =~ (yes|YES) ]]; then
-	  ${VIRTUALENV_PATH}/${APP_NAME}/bin/deactivate
-      fi
-      echo ""
+       echo -ne "Starting: ${attr_name} ( ${attr_desc} )"
+       [[ -f ${GUNICORN_RUN}/${attr_name}.pid ]] && continue
+       
+       attr_runtime_user=`jq -r ".runtime.user" ${json} 2>/dev/null`
+       attr_runtime_group=`jq -r ".runtime.group" ${json} 2>/dev/null`
+       attr_runtime_virtualenv=`jq -r ".runtime.virtualenv" ${json} 2>/dev/null`
+       attr_runtime_home=`jq -r ".runtime.home" ${json} 2>/dev/null`
+       attr_runtime_opts=`jq -r ".runtime.opts|[join(\" \")]|.[]" ${json} 2>/dev/null`
+
+       DAEMON=${GUNICORN_DAEMON}
+       if [[ "${attr_runtime_virtualenv}" =~ (yes|YES) ]]; then
+	   DAEMON=${VIRTUALENV_PATH}/${attr_name}/bin/gunicorn
+	   source ${VIRTUALENV_PATH}/${attr_name}/bin/activate
+       fi
+       ${DAEMON} ${attr_runtime_opts} \
+		 -u ${attr_runtime_user} \
+       		 -p ${GUNICORN_RUN}/${attr_name}.pid \
+		 --pythonpath "${attr_runtime_home}" \
+       		 --log-level warning \
+       		 --error-logfile ${GUNICORN_LOG}/${attr_name}.error.log \
+       		 --access-logfile ${GUNICORN_LOG}/${attr_name}.access.log -D
+       
+       if [[ "${attr_runtime_virtualenv}" =~ (yes|YES) ]]; then
+	   deactivate
+       fi
+       echo ""
    done
    return
 }
  
-stop() {
-    for file in ${GUNICORN_INCLUDE}/*.conf;do
-        :
-        set -- "$file"
-        if [ -f $file ] ; then
-            . $file
-        fi
-        if [[ "$SERVER" ]] && [[ "$SERVER" != $APP_NAME ]]; then
-            continue
-        fi
-        if [ -f ${GUNICORN_RUN}/${APP_NAME}.pid ]; then
-            echo -ne "\tKilling ${APP_NAME}: ${APP_DESC}"
-            killproc -p ${GUNICORN_RUN}/${APP_NAME}.pid
-            echo ""
-        fi
+gunicorn_stop() {
+    for json in ${GUNICORN_INCLUDE}/*.json;do
+       attr_name=`jq -r ".name" ${json} 2>/dev/null`
+       [[ ${attr_name} != ${APP_NAME} ]] && continue
+       attr_desc=`jq -r ".desc" ${json} 2>/dev/null`
+
+       echo -ne "Stopping: ${attr_name} ( ${attr_desc} )"
+       if [ -f ${GUNICORN_RUN}/${attr_name}.pid ]; then
+           kill -9 `cat ${GUNICORN_RUN}/${attr_name}.pid`
+	   rm ${GUNICORN_RUN}/${attr_name}.pid
+       fi
+       echo ""
     done
 }
 
@@ -99,19 +98,16 @@ case "$1" in
         list
         ;;
     start)
-        echo "Starting $DESC"
-        start
+        gunicorn_start
         ;;
     stop)
-        echo "Stopping $APP_DESC"
-        stop
+        gunicorn_stop
         ;;
-    restart)
-        echo "Restarting $APP_DESC"
-        stop
-        sleep 1
-        start
-        ;;
+    # restart)
+    #     gunicorn_stop
+    #     sleep 1
+    #     gunicorn_start
+    #     ;;
     *)
         N=/etc/init.d/$NAME
         echo "Usage: $N {list|start|stop|restart} [application]" >&2

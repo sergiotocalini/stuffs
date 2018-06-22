@@ -1,0 +1,27 @@
+{
+    "id": "",
+    "name": "example",
+    "desc": "example",
+    "version": "AHEAD",
+    "home": "/opt/example",
+    "monitoring": {
+	"enable": "yes",
+	"ws": {
+            "url": "http://localhost:7000/",
+            "codes": [200]
+	},
+	"port": [
+            7000
+	]
+    },
+    "scripts": {
+	"start": "",
+	"stop": ""
+    },
+    "runtime": {
+	"user": "python",
+	"virtualenv": "yes",
+	"home": "/opt/example",
+	"opts": ["run:example -w 5 -b 0.0.0.0:7000 -e APP_SETTINGS=example.config.Local"]
+    }
+}
