@@ -36,7 +36,7 @@ APP_NAME="${2}"
 [ -f ${GUNICORN_CONF} ] && . ${GUNICORN_CONF}
 
 # Testing the gunicorn daemon.
-test -x ${GUNICORN_DAEMON} || exit 0
+# test -x ${GUNICORN_DAEMON} || exit 0
 
 # Check the run directory.
 [ ! -d ${GUNICORN_RUN} ] && mkdir -p ${GUNICORN_RUN}
