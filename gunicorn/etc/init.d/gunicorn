@@ -248,6 +248,12 @@ case "$1" in
     status)
 	gunicorn_status yes
 	;;
+    config)
+	gunicorn_config "${@:2}"
+	;;
+    virtualenv)
+	gunicorn_virtualenv
+	;;
     *)
         N=/etc/init.d/$NAME
         echo "Usage: $N {list|start|stop|restart} [application]" >&2
