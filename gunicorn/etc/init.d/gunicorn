@@ -48,7 +48,7 @@ gunicorn_start() {
        attr_desc=`jq -r ".desc" ${json} 2>/dev/null`
 
        echo -ne "Starting: ${attr_name} ( ${attr_desc} )"
-       gunicorn_status "${attr_name}" && continue
+       gunicorn_status "${attr_name}" && echo "" && continue
        
        attr_runtime_user=`jq -r ".runtime.user" ${json} 2>/dev/null`
        attr_runtime_group=`jq -r ".runtime.group" ${json} 2>/dev/null`
@@ -85,7 +85,7 @@ gunicorn_stop() {
        attr_desc=`jq -r ".desc" ${json} 2>/dev/null`
 
        echo -ne "Stopping: ${attr_name} ( ${attr_desc} )"
-       if $( gunicorn_status "${attr_name}" ); then
+       if gunicorn_status "${attr_name}"; then
            kill -SIGQUIT `cat "${GUNICORN_RUN}/${attr_name}.pid"`
 	   rm "${GUNICORN_RUN}/${attr_name}.pid"
        fi
@@ -101,7 +101,7 @@ gunicorn_reload() {
        attr_desc=`jq -r ".desc" ${json} 2>/dev/null`
 
        echo -ne "Reloading: ${attr_name} ( ${attr_desc} )"
-       if $( gunicorn_status "${attr_name}" ); then
+       if gunicorn_status "${attr_name}"; then
            kill -HUP `cat "${GUNICORN_RUN}/${attr_name}.pid"`
        fi
        echo ""
@@ -110,14 +110,15 @@ gunicorn_reload() {
 }
 
 gunicorn_status() {
+    show="${1:-no}"
     for json in ${GUNICORN_INCLUDE}/*.json;do
        attr_name=`jq -r ".name" "${json}" 2>/dev/null`
        [[ ${attr_name} != ${APP_NAME} ]] && continue
        attr_desc=`jq -r ".desc" "${json}" 2>/dev/null`
        attr_url=`jq -r '.monitoring.ws.url' "${json}" 2>/dev/null`
 
-       if [[ -n ${url/null/} ]]; then
-	   rval=`curl --insecure -s ${url} -o /dev/null -w "%{http_code}\n" 2>/dev/null`
+       if [[ -n ${attr_url/null/} ]]; then
+	   rval=`curl --insecure -s ${attr_url} -o /dev/null -w "%{http_code}\n" 2>/dev/null`
 	   rcode="${?}"
 	   if [[ ${rcode} == 0 ]]; then
 	       valid_codes=`jq -r '.monitoring.ws.codes|@sh' "${json}" 2>/dev/null`
@@ -139,15 +140,23 @@ gunicorn_status() {
 		   res=0
 	       fi
            done
-	   if [ ${res:-0} == 0 ]; then
-	       [ -f "${GUNICORN_RUN}/${attr_name}.pid" ] && rm "${GUNICORN_RUN}/${attr_name}.pid"
-	       return 0
-	   else
-	       return 1
-	   fi
        fi
        break
     done	   
+    if [ ${res:-0} == 0 ]; then
+       [ -f "${GUNICORN_RUN}/${attr_name}.pid" ] && rm "${GUNICORN_RUN}/${attr_name}.pid"
+       if [[ ${show} =~ (yes|YES|y|1) ]]; then
+	  echo -e "Status: ${attr_name} ( ${attr_desc} )"
+	  echo -e "   Pid: Is not running!"
+       fi
+       return 1
+    else
+       if [[ ${show} =~ (yes|YES|y|1) ]]; then
+	  echo -e "Status: ${attr_name} ( ${attr_desc} )"
+	  echo -e "   Pid: `cat \"${GUNICORN_RUN}/${attr_name}.pid\"`"
+       fi
+       return 0
+    fi
 }
 
 case "$1" in
@@ -169,6 +178,9 @@ case "$1" in
     reload)
         gunicorn_reload
         ;;
+    status)
+	gunicorn_status yes
+	;;
     *)
         N=/etc/init.d/$NAME
         echo "Usage: $N {list|start|stop|restart} [application]" >&2
