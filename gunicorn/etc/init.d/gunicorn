@@ -64,12 +64,12 @@ gunicorn_config() {
     config="${GUNICORN_INCLUDE}/${params[0]}.json"
     [ -f "${config}" ] || return 1
 
-    if [[ ${params[2]} =~ (get|GET) ]]; then
+    if [[ ${params[1]} =~ (get|GET) ]]; then
 	jq -rc ".${params[2]}" "${config}" 2>/dev/null
 	if [[ ${?} != 0 ]]; then
 	    return 1
 	fi
-    elif [[ ${params[2]} =~ (set|SET) ]]; then
+    elif [[ ${params[1]} =~ (set|SET) ]]; then
 	json=`jq . "${config}" 2>/dev/null`
 	if [[ -n ${json} ]]; then
             if [[ ${#params[@]} > 4 ]]; then
