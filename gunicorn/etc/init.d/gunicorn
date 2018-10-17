@@ -53,6 +53,61 @@ gunicorn_list() {
     printf "%s\n" "${output[@]}" | column -txne -s ';'
 }
 
+gunicorn_config() {
+    params=( ${@} )
+
+    [[ -n ${params[0]} || -n ${params[1]} || -n ${params[2]} ]] || return 1
+
+    config="${SPRING_INCLUDE}/${params[0]}.json"
+    [ -f "${config}" ] || return 1
+
+    if [[ ${params[0]} =~ (get|GET) ]]; then
+	jq -rc ".${params[1]}" "${config}" 2>/dev/null
+	if [[ ${?} != 0 ]]; then
+	    return 1
+	fi
+    elif [[ ${params[0]} =~ (set|SET) ]]; then
+	json=`jq . "${config}" 2>/dev/null`
+	if [[ -n ${json} ]]; then
+            if [[ ${#params[@]} > 4 ]]; then
+		json=`echo "${json}" | jq ".${params[2]}=[]"`
+		for val in "${params[@]:3}"; do
+                    json=`echo "${json}" | jq ".${params[2]}+=[${val}]"`
+		done
+            else
+		json=`echo "${json}" | jq ".${params[2]}=\"${params[3]}\""`
+	    fi
+            [[ -n ${json} ]] && echo "${json}" | jq . 2>/dev/null > "${config}"
+	else
+	    return 1
+	fi
+    fi
+    return 0
+}
+
+gunicorn_virtualenv() {
+   for json in ${GUNICORN_INCLUDE}/*.json; do
+       attr_name=`jq -r ".name" ${json} 2>/dev/null`
+       [[ ${attr_name} != ${APP_NAME} ]] && continue
+
+       attr_runtime_virtualenv=`jq -r ".runtime.virtualenv" ${json} 2>/dev/null`
+       attr_runtime_home=`jq -r ".runtime.home" ${json} 2>/dev/null`
+       
+       if [[ "${attr_runtime_virtualenv}" =~ (yes|YES) ]]; then
+	   if [ ! -f "${VIRTUALENV_PATH}/${attr_name}/bin/activate" ]; then
+	       virtualenv "${VIRTUALENV_PATH}/${attr_name}"
+	   fi
+	   source "${VIRTUALENV_PATH}/${attr_name}/bin/activate"
+	   [ -f "${attr_runtime_home}/requirements.txt" ] && pip install -r "${attr_runtime_home}/requirements.txt"
+	   pip list
+	   deactive
+       else
+	   return 1
+       fi
+   done
+   return 0
+}
+    
 gunicorn_start() {
    for json in ${GUNICORN_INCLUDE}/*.json; do
        attr_name=`jq -r ".name" ${json} 2>/dev/null`
