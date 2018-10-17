@@ -41,6 +41,18 @@ APP_NAME="${2}"
 # Check the run directory.
 [ ! -d ${GUNICORN_RUN} ] && mkdir -p ${GUNICORN_RUN}
 
+gunicorn_list() {
+    params=( ${@} )
+    if [[ ${#params[@]} == 0 ]]; then
+	output[${#output[@]}]="ID;NAME;VERSION;DESCRIPTION"
+	output[${#output[@]}]="--;----;-------;-----------"
+	for x in ${GUNICORN_INCLUDE}/*.json; do
+	    output[${#output[@]}]="`jq -r '[.id, .name, .version, .desc] | join(\";\")' ${x} 2>/dev/null`"
+	done
+    fi
+    printf "%s\n" "${output[@]}" | column -txne -s ';'
+}
+
 gunicorn_start() {
    for json in ${GUNICORN_INCLUDE}/*.json; do
        attr_name=`jq -r ".name" ${json} 2>/dev/null`
