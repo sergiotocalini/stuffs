@@ -228,8 +228,7 @@ gunicorn_status() {
 
 case "$1" in
     list)
-        echo "Applications supported"
-        list
+        gunicorn_list
         ;;
     start)
         gunicorn_start
