@@ -61,10 +61,10 @@ gunicorn_config() {
     # paramx: values (optional for set option)
     [[ -n ${params[0]} || -n ${params[1]} || -n ${params[2]} ]] || return 1
 
-    config="${SPRING_INCLUDE}/${params[0]}.json"
+    config="${GUNICORN_INCLUDE}/${params[0]}.json"
     [ -f "${config}" ] || return 1
 
-    if [[ ${params[1]} =~ (get|GET) ]]; then
+    if [[ ${params[2]} =~ (get|GET) ]]; then
 	jq -rc ".${params[2]}" "${config}" 2>/dev/null
 	if [[ ${?} != 0 ]]; then
 	    return 1
