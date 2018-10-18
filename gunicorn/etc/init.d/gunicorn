@@ -29,9 +29,6 @@ APP_NAME="${2}"
 # Import gunicorn configuration file.
 [ -f ${GUNICORN_DIR}/gunicorn.conf ] && . ${GUNICORN_DIR}/gunicorn.conf
 
-# Testing the gunicorn daemon.
-test -x ${GUNICORN_DAEMON} || exit 0
-
 # Check the run directory.
 [ ! -d ${GUNICORN_RUN} ] && mkdir -p ${GUNICORN_RUN}
 [ ! -d ${GUNICORN_LOG} ] && mkdir -p ${GUNICORN_LOG}
