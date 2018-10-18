@@ -11,20 +11,14 @@
 ### END INIT INFO
 
 NAME=gunicorn
-DESC=gunicorn
+DESC=Gunicorn
 GUNICORN_DAEMON=/usr/bin/gunicorn
 GUNICORN_DIR=/etc/gunicorn
-GUNICORN_CONF=${GUNICORN_DIR}/gunicorn.conf
-GUNICORN_INCLUDE=/etc/gunicorn/conf.d
 GUNICORN_LOG=/var/log/gunicorn
 GUNICORN_RUN=/var/run/gunicorn
 VIRTUALENV_PATH=/etc/gunicorn/venvs
 RUN_AS="python"
 APP_NAME="${2}"
-
-# Source function library.
-# [ -f /etc/init.d/functions ] && . /etc/init.d/functions
-# [ -f /lib/lsb/init-functions ] && . /lib/lsb/init-functions
 
 # Source networking configuration.
 [ -f /etc/sysconfig/network ] && . /etc/sysconfig/network
@@ -33,22 +27,25 @@ APP_NAME="${2}"
 [ "$NETWORKING" = "no" ] && exit 0
 
 # Import gunicorn configuration file.
-[ -f ${GUNICORN_CONF} ] && . ${GUNICORN_CONF}
+[ -f ${GUNICORN_DIR}/gunicorn.conf ] && . ${GUNICORN_DIR}/gunicorn.conf
 
 # Testing the gunicorn daemon.
-# test -x ${GUNICORN_DAEMON} || exit 0
+test -x ${GUNICORN_DAEMON} || exit 0
 
 # Check the run directory.
 [ ! -d ${GUNICORN_RUN} ] && mkdir -p ${GUNICORN_RUN}
+[ ! -d ${GUNICORN_LOG} ] && mkdir -p ${GUNICORN_LOG}
 
 gunicorn_list() {
     params=( ${@} )
     if [[ ${#params[@]} == 0 ]]; then
 	output[${#output[@]}]="ID;NAME;VERSION;DESCRIPTION"
 	output[${#output[@]}]="--;----;-------;-----------"
-	for x in ${GUNICORN_INCLUDE}/*.json; do
+	for x in ${GUNICORN_DIR}/conf.d/*.json; do
 	    output[${#output[@]}]="`jq -r '[.id, .name, .version, .desc] | join(\";\")' ${x} 2>/dev/null`"
 	done
+	output[${#output[@]}]="--;----;-------;-----------"
+	output[${#output[@]}]=""
     fi
     printf "%s\n" "${output[@]}" | column -txne -s ';'
 }
@@ -61,7 +58,7 @@ gunicorn_config() {
     # paramx: values (optional for set option)
     [[ -n ${params[0]} || -n ${params[1]} || -n ${params[2]} ]] || return 1
 
-    config="${GUNICORN_INCLUDE}/${params[0]}.json"
+    config="${GUNICORN_DIR}/conf.d/${params[0]}.json"
     [ -f "${config}" ] || return 1
 
     if [[ ${params[1]} =~ (get|GET) ]]; then
@@ -89,7 +86,7 @@ gunicorn_config() {
 }
 
 gunicorn_virtualenv() {
-   for json in ${GUNICORN_INCLUDE}/*.json; do
+   for json in ${GUNICORN_DIR}/conf.d/*.json; do
        attr_name=`jq -r ".name" ${json} 2>/dev/null`
        [[ ${attr_name} != ${APP_NAME} ]] && continue
 
@@ -112,7 +109,7 @@ gunicorn_virtualenv() {
 }
     
 gunicorn_start() {
-   for json in ${GUNICORN_INCLUDE}/*.json; do
+   for json in ${GUNICORN_DIR}/conf.d/*.json; do
        attr_name=`jq -r ".name" ${json} 2>/dev/null`
        [[ ${attr_name} != ${APP_NAME} ]] && continue       
        attr_desc=`jq -r ".desc" ${json} 2>/dev/null`
@@ -149,7 +146,7 @@ gunicorn_start() {
 }
  
 gunicorn_stop() {
-    for json in ${GUNICORN_INCLUDE}/*.json;do
+    for json in ${GUNICORN_DIR}/conf.d/*.json;do
        attr_name=`jq -r ".name" ${json} 2>/dev/null`
        [[ ${attr_name} != ${APP_NAME} ]] && continue
        attr_desc=`jq -r ".desc" ${json} 2>/dev/null`
@@ -165,7 +162,7 @@ gunicorn_stop() {
 }
 
 gunicorn_reload() {
-    for json in ${GUNICORN_INCLUDE}/*.json;do
+    for json in ${GUNICORN_DIR}/conf.d/*.json;do
        attr_name=`jq -r ".name" ${json} 2>/dev/null`
        [[ ${attr_name} != ${APP_NAME} ]] && continue
        attr_desc=`jq -r ".desc" ${json} 2>/dev/null`
@@ -181,7 +178,7 @@ gunicorn_reload() {
 
 gunicorn_status() {
     show="${1:-no}"
-    for json in ${GUNICORN_INCLUDE}/*.json;do
+    for json in ${GUNICORN_DIR}/conf.d/*.json;do
        attr_name=`jq -r ".name" "${json}" 2>/dev/null`
        [[ ${attr_name} != ${APP_NAME} ]] && continue
        attr_desc=`jq -r ".desc" "${json}" 2>/dev/null`
