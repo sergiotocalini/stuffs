@@ -103,7 +103,7 @@ gunicorn_virtualenv() {
 	   source "${VIRTUALENV_PATH}/${attr_name}/bin/activate"
 	   [ -f "${attr_runtime_home}/requirements.txt" ] && pip install -r "${attr_runtime_home}/requirements.txt"
 	   pip list
-	   deactive
+	   deactivate
        else
 	   return 1
        fi
