@@ -162,10 +162,11 @@ gunicorn_stop() {
 gunicorn_restart() {
     gunicorn_stop
     echo -en "Waiting: "
-    until gunicorn_status; do
+    until ! gunicorn_status; do
 	sleep 3
 	echo -en "."
     done
+    echo ""
     gunicorn_start
 }
 
@@ -186,6 +187,7 @@ gunicorn_reload() {
 
 gunicorn_status() {
     show="${1:-no}"
+    res=0
     for json in ${GUNICORN_DIR}/conf.d/*.json;do
        attr_name=`jq -r ".name" "${json}" 2>/dev/null`
        [[ ${attr_name} != ${APP_NAME} ]] && continue
