@@ -1,6 +1,5 @@
 #!/usr/bin/env ksh
 SOURCE_DIR=$(dirname $0)
-DEPLOY_DIR=/etc/gunicorn
 
 GUNICORN_DAEMON="${1:-/usr/bin/gunicorn}"
 GUNICORN_DIR="${2:-/etc/gunicorn}"
@@ -9,12 +8,14 @@ GUNICORN_RUN="${4:-/var/run/gunicorn}"
 VIRTUALENV_PATH="${5:-/etc/gunicorn/venvs}"
 RUNS_AS="${6:-python}"
 
-mkdir -p ${DEPLOY_DIR} 
+mkdir -p ${GUNICORN_DIR}
+mkdir -p ${GUNICORN_DIR}/conf.d
+
 SCRIPT_CONFIG="${DEPLOY_DIR}/gunicorn.conf"
 [[ -f ${SCRIPT_CONFIG} ]] && SCRIPT_CONFIG="${SCRIPT_CONFIG}.new"
 
 cp -rpv ${SOURCE_DIR}/etc/gunicorn/gunicorn.conf               ${SCRIPT_CONFIG}
-cp -rpv ${SOURCE_DIR}/etc/gunicorn/conf.d/example.json.save    ${SCRIPT_CONFIG}
+cp -rpv ${SOURCE_DIR}/etc/gunicorn/conf.d/example.json.save    ${GUNICORN_DIR}/conf.d/example.json.save
 cp -rpv ${SOURCE_DIR}/etc/init.d/gunicorn                      /etc/init.d/gunicorn
 
 chown -R root: /etc/gunicorn /etc/init.d/gunicorn
@@ -30,4 +31,9 @@ for index in ${!regex_array[*]}; do
     sed -i "${regex_array[${index}]}" ${SCRIPT_CONFIG}
 done
 
-[ ${SCRIPT_CONFIG} =~ .*.new$ ] && diff ${SCRIPT_CONFIG} ${SCRIPT_CONFIG%.new} > /dev/null && rm ${SCRIPT_CONFIG}
+if [[ ${SCRIPT_CONFIG} =~ .*.new$ ]]; then
+    if diff ${SCRIPT_CONFIG} ${SCRIPT_CONFIG%.new} > /dev/null; then
+	rm ${SCRIPT_CONFIG}
+    fi
+fi
+
