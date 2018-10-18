@@ -74,3 +74,11 @@ Starting: example ( Example Description )
 Reloading: example ( Example Description )
 #~
 ```
+
+### Virtualenv
+Also to create the virtual env and install the requirements.txt file we can use the following function.
+```
+#~ /etc/init.d/gunicorn virtualenv example
+
+#~
+```
