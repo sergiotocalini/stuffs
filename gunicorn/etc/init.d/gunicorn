@@ -95,6 +95,7 @@ gunicorn_virtualenv() {
 	       virtualenv "${VIRTUALENV_PATH}/${attr_name}"
 	   fi
 	   source "${VIRTUALENV_PATH}/${attr_name}/bin/activate"
+	   pip install gunicorn
 	   [ -f "${attr_runtime_home}/requirements.txt" ] && pip install -r "${attr_runtime_home}/requirements.txt"
 	   pip list
 	   deactivate
@@ -156,6 +157,16 @@ gunicorn_stop() {
        echo ""
        break
     done
+}
+
+gunicorn_restart() {
+    gunicorn_stop
+    echo -en "Waiting: "
+    until gunicorn_status; do
+	sleep 3
+	echo -en "."
+    done
+    gunicorn_start
 }
 
 gunicorn_reload() {
@@ -234,10 +245,8 @@ case "$1" in
         gunicorn_stop
         ;;
     restart)
-        gunicorn_stop
-        sleep 3
-        gunicorn_start
-        ;;
+	gunicorn_restart
+	;;
     reload)
         gunicorn_reload
         ;;
