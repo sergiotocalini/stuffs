@@ -14,9 +14,9 @@ mkdir -p ${GUNICORN_DIR}/conf.d
 SCRIPT_CONFIG="${DEPLOY_DIR}/gunicorn.conf"
 [[ -f ${SCRIPT_CONFIG} ]] && SCRIPT_CONFIG="${SCRIPT_CONFIG}.new"
 
-cp -rpv ${SOURCE_DIR}/etc/gunicorn/gunicorn.conf               ${SCRIPT_CONFIG}
-cp -rpv ${SOURCE_DIR}/etc/gunicorn/conf.d/example.json.save    ${GUNICORN_DIR}/conf.d/example.json.save
-cp -rpv ${SOURCE_DIR}/etc/init.d/gunicorn                      /etc/init.d/gunicorn
+cp -rp ${SOURCE_DIR}/etc/gunicorn/gunicorn.conf               ${SCRIPT_CONFIG}
+cp -rp ${SOURCE_DIR}/etc/gunicorn/conf.d/example.json.save    ${GUNICORN_DIR}/conf.d/example.json.save
+cp -rp ${SOURCE_DIR}/etc/init.d/gunicorn                      /etc/init.d/gunicorn
 
 chown -R root: /etc/gunicorn /etc/init.d/gunicorn
 chmod -R 755   /etc/gunicorn /etc/init.d/gunicorn
