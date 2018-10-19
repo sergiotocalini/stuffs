@@ -85,7 +85,7 @@ gunicorn_config() {
 gunicorn_virtualenv() {
    for json in ${GUNICORN_DIR}/conf.d/*.json; do
        attr_name=`jq -r ".name" ${json} 2>/dev/null`
-       [[ ${attr_name} != ${APP_NAME} ]] && continue
+       [[ ${APP_NAME} =~ (ALL) || ${APP_NAME} == ${attr_name} ]] || continue
 
        attr_runtime_virtualenv=`jq -r ".runtime.virtualenv" ${json} 2>/dev/null`
        attr_runtime_home=`jq -r ".runtime.home" ${json} 2>/dev/null`
@@ -109,7 +109,7 @@ gunicorn_virtualenv() {
 gunicorn_start() {
    for json in ${GUNICORN_DIR}/conf.d/*.json; do
        attr_name=`jq -r ".name" ${json} 2>/dev/null`
-       [[ ${attr_name} != ${APP_NAME} ]] && continue       
+       [[ ${APP_NAME} =~ (ALL) || ${APP_NAME} == ${attr_name} ]] || continue
        attr_desc=`jq -r ".desc" ${json} 2>/dev/null`
 
        echo -ne "Starting: ${attr_name} ( ${attr_desc} )"
@@ -138,7 +138,6 @@ gunicorn_start() {
 	   deactivate
        fi
        echo ""
-       break
    done
    return
 }
@@ -146,7 +145,7 @@ gunicorn_start() {
 gunicorn_stop() {
     for json in ${GUNICORN_DIR}/conf.d/*.json;do
        attr_name=`jq -r ".name" ${json} 2>/dev/null`
-       [[ ${attr_name} != ${APP_NAME} ]] && continue
+       [[ ${APP_NAME} =~ (ALL) || ${APP_NAME} == ${attr_name} ]] || continue
        attr_desc=`jq -r ".desc" ${json} 2>/dev/null`
 
        echo -ne "Stopping: ${attr_name} ( ${attr_desc} )"
@@ -155,7 +154,6 @@ gunicorn_stop() {
 	   rm "${GUNICORN_RUN}/${attr_name}.pid"
        fi
        echo ""
-       break
     done
 }
 
@@ -173,7 +171,7 @@ gunicorn_restart() {
 gunicorn_reload() {
     for json in ${GUNICORN_DIR}/conf.d/*.json;do
        attr_name=`jq -r ".name" ${json} 2>/dev/null`
-       [[ ${attr_name} != ${APP_NAME} ]] && continue
+       [[ ${APP_NAME} =~ (ALL) || ${APP_NAME} == ${attr_name} ]] || continue
        attr_desc=`jq -r ".desc" ${json} 2>/dev/null`
 
        echo -ne "Reloading: ${attr_name} ( ${attr_desc} )"
@@ -181,16 +179,17 @@ gunicorn_reload() {
            kill -HUP `cat "${GUNICORN_RUN}/${attr_name}.pid"`
        fi
        echo ""
-       break
     done
 }
 
 gunicorn_status() {
-    show="${1:-no}"
+    local_name="${1}"
+    local_show="${2:-no}"
+    [[ -n "${name}" ]] && return -1
     res=0
     for json in ${GUNICORN_DIR}/conf.d/*.json;do
        attr_name=`jq -r ".name" "${json}" 2>/dev/null`
-       [[ ${attr_name} != ${APP_NAME} ]] && continue
+       [[ ${local_name} != ${attr_name} ]] && continue
        attr_desc=`jq -r ".desc" "${json}" 2>/dev/null`
        attr_url=`jq -r '.monitoring.ws.url' "${json}" 2>/dev/null`
 
@@ -222,13 +221,13 @@ gunicorn_status() {
     done	   
     if [ ${res:-0} == 0 ]; then
        [ -f "${GUNICORN_RUN}/${attr_name}.pid" ] && rm "${GUNICORN_RUN}/${attr_name}.pid"
-       if [[ ${show} =~ (yes|YES|y|1) ]]; then
+       if [[ ${local_show} =~ (yes|YES|y|1) ]]; then
 	  echo -e "Status: ${attr_name} ( ${attr_desc} )"
 	  echo -e "   Pid: Is not running!"
        fi
        return 1
     else
-       if [[ ${show} =~ (yes|YES|y|1) ]]; then
+       if [[ ${local_show} =~ (yes|YES|y|1) ]]; then
 	  echo -e "Status: ${attr_name} ( ${attr_desc} )"
 	  echo -e "   Pid: `cat \"${GUNICORN_RUN}/${attr_name}.pid\"`"
        fi
@@ -253,7 +252,7 @@ case "$1" in
         gunicorn_reload
         ;;
     status)
-	gunicorn_status yes
+	gunicorn_status "${@:2}"
 	;;
     config)
 	gunicorn_config "${@:2}"
