@@ -10,7 +10,7 @@
 # Description:           starts gunicorn using start-stop-daemon
 ### END INIT INFO
 
-NAME=gunicorn
+NAME=$(basename $0)
 DESC=Gunicorn
 GUNICORN_DAEMON=/usr/bin/gunicorn
 GUNICORN_DIR=/etc/gunicorn
@@ -43,8 +43,39 @@ gunicorn_list() {
 	done
 	output[${#output[@]}]="--;----;-------;-----------"
 	output[${#output[@]}]=""
+	printf "%s\n" "${output[@]}" | column -txne -s ';'
+    elif [[ ${params[0]} == 'units' ]]; then
+        if [[ -n ${params[1]} ]]; then
+          for x in ${GUNICORN_DIR}/conf.d/*.json; do
+             name=`jq -r 'select(.name=="'${params[1]}'")|.name' ${x} 2>/dev/null`
+             if [[ ${name} == ${params[1]} ]]; then
+                echo ${x}
+                break
+             fi
+          done
+        else
+            for x in ${GUNICORN_DIR}/conf.d/*.json; do
+               echo ${x}
+            done
+        fi
+    elif [[ ${params[0]} == 'json' ]]; then
+        if [[ ${#params[@]} > 1 ]]; then
+            properties="{ "
+            for index in ${!params[@]}; do
+		[[ ${index} -eq 0 ]] && continue
+		[[ ${params[${index}]} =~ .*\..* ]] && continue
+		properties+="${params[${index}]},"
+            done
+            properties="${properties%?} }"
+        fi
+        gunicorn="[ "
+        for x in ${GUNICORN_DIR}/conf.d/*.json; do
+            gunicorn+=`jq -rc "${properties:-.}" ${x} 2>/dev/null`
+            gunicorn+=","
+        done
+        gunicorn="${gunicorn%?} ]"
+        echo "{}" | jq ".=${gunicorn}" 2>/dev/null
     fi
-    printf "%s\n" "${output[@]}" | column -txne -s ';'
 }
 
 gunicorn_config() {
@@ -237,7 +268,7 @@ gunicorn_status() {
 
 case "$1" in
     list)
-        gunicorn_list
+        gunicorn_list "${@:2}"
         ;;
     start)
         gunicorn_start
@@ -261,8 +292,8 @@ case "$1" in
 	gunicorn_virtualenv
 	;;
     *)
-        N=/etc/init.d/$NAME
-        echo "Usage: $N {list|start|stop|restart} [application]" >&2
+        N=/etc/init.d/${NAME}
+        echo "Usage: $N {start|stop|restart|reload|status|list|config|virtualenv} [app]" >&2
         exit 1
         ;;
 esac
