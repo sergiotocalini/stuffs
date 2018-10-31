@@ -259,8 +259,10 @@ gunicorn_status() {
        return 1
     else
        if [[ ${local_show} =~ (yes|YES|y|1) ]]; then
-	  echo -e "Status: ${attr_name} ( ${attr_desc} )"
-	  echo -e "   Pid: `cat \"${GUNICORN_RUN}/${attr_name}.pid\"`"
+	   echo -e "Status: ${attr_name} ( ${attr_desc} )"
+	   echo -e "   Pid: `cat \"${GUNICORN_RUN}/${attr_name}.pid\"`"
+       elif [[ ${local_show} =~ (pid|process) ]]; then
+	   echo "`cat \"${GUNICORN_RUN}/${attr_name}.pid\"`"
        fi
        return 0
     fi
