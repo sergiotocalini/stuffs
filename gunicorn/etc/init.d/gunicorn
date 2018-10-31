@@ -11,7 +11,7 @@
 ### END INIT INFO
 
 NAME=$(basename $0)
-DESC=Gunicorn
+DESC="Gunicorn Python Application"
 GUNICORN_DAEMON=/usr/bin/gunicorn
 GUNICORN_DIR=/etc/gunicorn
 GUNICORN_LOG=/var/log/gunicorn
@@ -27,7 +27,7 @@ APP_NAME="${2}"
 [ "$NETWORKING" = "no" ] && exit 0
 
 # Import gunicorn configuration file.
-[ -f ${GUNICORN_DIR}/gunicorn.conf ] && . ${GUNICORN_DIR}/gunicorn.conf
+[ -f ${GUNICORN_DIR}/${NAME%.*}.conf ] && . ${GUNICORN_DIR}/${NAME%.*}.conf
 
 # Check the run directory.
 [ ! -d ${GUNICORN_RUN} ] && mkdir -p ${GUNICORN_RUN}

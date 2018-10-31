@@ -23,7 +23,7 @@ SPRING_RUN="/var/run/spring-boot"
 [ "$NETWORKING" = "no" ] && exit 0
 
 # Import gunicorn configuration file.
-[ -f ${SPRING_DIR}/${APP_NAME%.*}.conf ] && . ${SPRING_DIR}/${NAME%.*}.conf
+[ -f ${SPRING_DIR}/${NAME%.*}.conf ] && . ${SPRING_DIR}/${NAME%.*}.conf
 
 springboot_list() {
     params=( ${@} )
