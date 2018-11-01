@@ -11,7 +11,7 @@ RUNS_AS="${6:-python}"
 mkdir -p ${GUNICORN_DIR}
 mkdir -p ${GUNICORN_DIR}/conf.d
 
-SCRIPT_CONFIG="${DEPLOY_DIR}/gunicorn.conf"
+SCRIPT_CONFIG="${GUNICORN_DIR}/gunicorn.conf"
 [[ -f ${SCRIPT_CONFIG} ]] && SCRIPT_CONFIG="${SCRIPT_CONFIG}.new"
 
 cp -rp ${SOURCE_DIR}/etc/gunicorn/gunicorn.conf               ${SCRIPT_CONFIG}
