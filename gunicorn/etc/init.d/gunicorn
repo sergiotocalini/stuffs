@@ -152,16 +152,24 @@ gunicorn_start() {
        attr_runtime_home=`jq -r ".runtime.home" ${json} 2>/dev/null`
        attr_runtime_opts=`jq -r ".runtime.opts|[join(\" \")]|.[]" ${json} 2>/dev/null`
 
+       attr_monitoring_statsd_host=`jq -r ".monitoring.statsd.host" ${json} 2>/dev/null`
+       attr_monitoring_statsd_prefix=`jq -r ".monitoring.statsd.prefix" ${json} 2>/dev/null`
+       
        DAEMON=${GUNICORN_DAEMON}
        if [[ "${attr_runtime_virtualenv}" =~ (yes|YES) ]]; then
 	   DAEMON=${VIRTUALENV_PATH}/${attr_name}/bin/gunicorn
 	   source ${VIRTUALENV_PATH}/${attr_name}/bin/activate
        fi
+
+       if [[ -n ${attr_monitoring_statsd_host/null} && -n ${attr_monitoring_statsd_prefix/null} ]]; then
+	   GUNICORN_STATSD="--statsd-host=${attr_monitoring_statsd_host} --statsd-prefix=${attr_monitoring_statsd_prefix}"
+       fi
+       
        ${DAEMON} ${attr_runtime_opts} \
 		 -u ${attr_runtime_user} \
        		 -p ${GUNICORN_RUN}/${attr_name}.pid \
 		 --pythonpath "${attr_runtime_home}" \
-       		 --log-level warning \
+       		 --log-level warning ${GUNICORN_STATSD} \
        		 --error-logfile ${GUNICORN_LOG}/${attr_name}.error.log \
        		 --access-logfile ${GUNICORN_LOG}/${attr_name}.access.log -D
        

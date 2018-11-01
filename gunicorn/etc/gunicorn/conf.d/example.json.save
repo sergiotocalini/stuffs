@@ -10,6 +10,10 @@
             "url": "http://localhost:7000/",
             "codes": [200]
 	},
+	"statsd": {
+	    "host": "localhost:8125",
+	    "prefix": "service.app"
+	},
 	"port": [
             7000
 	]
