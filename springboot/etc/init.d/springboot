@@ -38,16 +38,17 @@ springboot_list() {
 	printf "%s\n" "${output[@]}" | column -txne -s ';'	
     elif [[ ${params[0]} == 'units' ]]; then
         if [[ -n ${params[1]} ]]; then
-          for x in ${SPRING_DIR}/conf.d/*.json; do
-             name=`jq -r 'select(.name=="'${params[1]}'")|.name' ${x} 2>/dev/null`
-             if [[ ${name} == ${params[1]} ]]; then
-                echo ${x}
-                break
-             fi
-          done
+            for x in ${SPRING_DIR}/conf.d/*.json; do
+		name=`jq -r 'select(.name=="'${params[1]}'")|.name' ${x} 2>/dev/null`
+		if [[ ${name} == ${params[1]} ]]; then
+                    echo ${x}
+                    break
+		fi
+            done
         else
             for x in ${SPRING_DIR}/conf.d/*.json; do
-               echo ${x}
+		[[ ${x} == "${SPRING_DIR}/conf.d/*.json" ]] && continue
+		echo ${x}
             done
         fi
     elif [[ ${params[0]} == 'json' ]]; then
