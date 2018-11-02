@@ -160,7 +160,7 @@ gunicorn_start() {
        attr_monitoring_statsd_prefix=`jq -r ".monitoring.statsd.prefix" ${json} 2>/dev/null`
        
        DAEMON=${GUNICORN_DAEMON}
-       if [[ "${attr_runtime_virtualenv}" =~ (yes|YES) ]]; then
+       if [[ -n ${attr_runtime_virtualenv/null} ]]; then
 	   DAEMON=${VIRTUALENV_PATH}/${attr_name}/bin/gunicorn
 	   source ${VIRTUALENV_PATH}/${attr_name}/bin/activate
        fi
