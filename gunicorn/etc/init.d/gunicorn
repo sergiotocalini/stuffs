@@ -114,27 +114,31 @@ gunicorn_config() {
 }
 
 gunicorn_virtualenv() {
-   for json in ${GUNICORN_DIR}/conf.d/*.json; do
-       attr_name=`jq -r ".name" ${json} 2>/dev/null`
-       [[ ${APP_NAME} =~ (ALL) || ${APP_NAME} == ${attr_name} ]] || continue
+    params=( ${@} )
+    for json in ${GUNICORN_DIR}/conf.d/*.json; do
+	attr_name=`jq -r ".name" ${json} 2>/dev/null`
+	[[ ${APP_NAME} =~ (ALL) || ${APP_NAME} == ${attr_name} ]] || continue
 
-       attr_runtime_virtualenv=`jq -r ".runtime.virtualenv" ${json} 2>/dev/null`
-       attr_runtime_home=`jq -r ".runtime.home" ${json} 2>/dev/null`
-       
-       if [[ "${attr_runtime_virtualenv}" =~ (yes|YES) ]]; then
-	   if [ ! -f "${VIRTUALENV_PATH}/${attr_name}/bin/activate" ]; then
-	       virtualenv "${VIRTUALENV_PATH}/${attr_name}"
-	   fi
-	   source "${VIRTUALENV_PATH}/${attr_name}/bin/activate"
-	   pip install gunicorn
-	   [ -f "${attr_runtime_home}/requirements.txt" ] && pip install -r "${attr_runtime_home}/requirements.txt"
-	   pip list
-	   deactivate
-       else
-	   return 1
-       fi
-   done
-   return 0
+	attr_runtime_virtualenv=`jq -r ".runtime.virtualenv" ${json} 2>/dev/null`
+	attr_runtime_home=`jq -r ".runtime.home" ${json} 2>/dev/null`
+	
+	if [[ -n ${attr_runtime_virtualenv/null} ]]; then
+	    if [ ! -f "${VIRTUALENV_PATH}/${attr_name}/bin/activate" ]; then
+		if [[ "${attr_runtime_virtualenv}" =~ (python3|py3|p3|3) ]]; then
+		    opts[${#opts[@]}]="-p python3"
+		fi
+		virtualenv ${opts[@]} "${VIRTUALENV_PATH}/${attr_name}"
+	    fi
+	    source "${VIRTUALENV_PATH}/${attr_name}/bin/activate"
+	    pip install gunicorn
+	    [ -f "${attr_runtime_home}/requirements.txt" ] && pip install -r "${attr_runtime_home}/requirements.txt"
+	    pip list
+	    deactivate
+	else
+	    return 1
+	fi
+    done
+    return 0
 }
     
 gunicorn_start() {
@@ -299,7 +303,7 @@ case "$1" in
 	gunicorn_config "${@:2}"
 	;;
     virtualenv)
-	gunicorn_virtualenv
+	gunicorn_virtualenv "${@:2}"
 	;;
     *)
         N=/etc/init.d/${NAME}
