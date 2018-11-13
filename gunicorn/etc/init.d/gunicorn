@@ -158,6 +158,10 @@ gunicorn_start() {
 
        attr_monitoring_statsd_host=`jq -r ".monitoring.statsd.host" ${json} 2>/dev/null`
        attr_monitoring_statsd_prefix=`jq -r ".monitoring.statsd.prefix" ${json} 2>/dev/null`
+
+       attr_syslog_enable=`jq -r ".syslog.enable" ${json} 2>/dev/null`
+       attr_syslog_prefix=`jq -r ".syslog.prefix" ${json} 2>/dev/null`
+       attr_syslog_facility=`jq -r ".syslog.facility" ${json} 2>/dev/null`
        
        DAEMON=${GUNICORN_DAEMON}
        if [[ -n ${attr_runtime_virtualenv/null} ]]; then
@@ -165,15 +169,28 @@ gunicorn_start() {
 	   source ${VIRTUALENV_PATH}/${attr_name}/bin/activate
        fi
 
-       if [[ -n ${attr_monitoring_statsd_host/null} && -n ${attr_monitoring_statsd_prefix/null} ]]; then
-	   GUNICORN_STATSD="--statsd-host=${attr_monitoring_statsd_host} --statsd-prefix=${attr_monitoring_statsd_prefix}"
+       GUNICORN_SYSLOG=()
+       if [[ ${attr_syslog_enable} =~ (yes|YES|true|TRUE) ]]; then
+	   GUNICORN_SYSLOG[0]="--log-syslog"
+	   GUNICORN_SYSLOG[1]="--log-syslog-prefix ${attr_syslog_prefix/null/gunicorn.${attr_name}}"
+	   GUNICORN_SYSLOG[2]="--log-syslog-facility ${attr_syslog_facility/null/user}"
        fi
+       GUNICORN_SYSLOG=`printf '%s ' ${GUNICORN_SYSLOG[@]}`
+
+       GUNICORN_STATSD=()
+       if [[ -n ${attr_monitoring_statsd_host/null} && -n ${attr_monitoring_statsd_prefix/null} ]]; then
+	   GUNICORN_STATSD[0]="--statsd-host=${attr_monitoring_statsd_host}"
+	   GUNICORN_STATSD[1]="--statsd-prefix=${attr_monitoring_statsd_prefix}"
+       fi
+       GUNICORN_STATSD=`printf '%s ' ${GUNICORN_STATSD[@]}`
        
        ${DAEMON} ${attr_runtime_opts} \
 		 -u ${attr_runtime_user} \
        		 -p ${GUNICORN_RUN}/${attr_name}.pid \
 		 --pythonpath "${attr_runtime_home}" \
-       		 --log-level warning ${GUNICORN_STATSD} \
+       		 --log-level warning \
+		 ${GUNICORN_STATSD} \
+		 ${GUNICORN_SYSLOG} \
        		 --error-logfile ${GUNICORN_LOG}/${attr_name}.error.log \
        		 --access-logfile ${GUNICORN_LOG}/${attr_name}.access.log -D
        

@@ -12,11 +12,16 @@
 	},
 	"statsd": {
 	    "host": "localhost:8125",
-	    "prefix": "service.app"
+	    "prefix": "gunicorn.example"
 	},
 	"port": [
             7000
 	]
+    },
+    "syslog": {
+        "enable": true,
+	"prefix": "gunicorn.example",
+	"facility": "user"
     },
     "scripts": {
 	"start": "",
