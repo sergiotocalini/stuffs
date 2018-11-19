@@ -38,23 +38,23 @@ We need to enable the projects we want to run with gunicorn using json format as
   "version": "AHEAD",
   "home": "/opt/example",
   "monitoring": {
-	  "enable": "yes",
-	  "ws": {
-      "url": "http://localhost:7000/",
-      "codes": [200]
-	  },
-    "statsd": {
-	    "host": "localhost:8125",
-	    "prefix": "gunicorn.example"
-	  },
-	  "port": [
-      7000
-	  ]
+     "enable": "yes",
+     "ws": {
+        "url": "http://localhost:7000/",
+        "codes": [200]
+     },
+     "statsd": {
+        "host": "localhost:8125",
+	"prefix": "gunicorn.example"
+     },
+     "port": [
+        7000
+     ]
   },
   "syslog": {
      "enable": true,
-	   "prefix": "gunicorn.example",
-	   "facility": "user"
+     "prefix": "gunicorn.example",
+     "facility": "user"
   },
   "scripts": {
 	  "start": "",
