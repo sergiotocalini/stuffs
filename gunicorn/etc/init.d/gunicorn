@@ -86,29 +86,33 @@ gunicorn_config() {
     # paramx: values (optional for set option)
     [[ -n ${params[0]} || -n ${params[1]} || -n ${params[2]} ]] || return 1
 
-    config="${GUNICORN_DIR}/conf.d/${params[0]}.json"
-    [ -f "${config}" ] || return 1
-
-    if [[ ${params[1]} =~ (get|GET) ]]; then
-	jq -rc ".${params[2]}" "${config}" 2>/dev/null
-	if [[ ${?} != 0 ]]; then
-	    return 1
-	fi
-    elif [[ ${params[1]} =~ (set|SET) ]]; then
-	json=`jq . "${config}" 2>/dev/null`
-	if [[ -n ${json} ]]; then
-            if [[ ${#params[@]} > 4 ]]; then
-		json=`echo "${json}" | jq ".${params[2]}=[]"`
-		for val in "${params[@]:3}"; do
-                    json=`echo "${json}" | jq ".${params[2]}+=[${val}]"`
-		done
-            else
-		json=`echo "${json}" | jq ".${params[2]}=\"${params[3]}\""`
+    if [[ ${params[1]} =~ (get|GET|set|SET) ]]; then
+	config="${GUNICORN_DIR}/conf.d/${params[0]}.json"
+	[ -f "${config}" ] || return 1
+	if [[ ${params[1]} =~ (get|GET) ]]; then
+	    jq -rc ".${params[2]}" "${config}" 2>/dev/null
+	    if [[ ${?} != 0 ]]; then
+		return 1
 	    fi
-            [[ -n ${json} ]] && echo "${json}" | jq . 2>/dev/null > "${config}"
-	else
-	    return 1
+	elif [[ ${params[1]} =~ (set|SET) ]]; then
+	    json=`jq . "${config}" 2>/dev/null`
+	    if [[ -n ${json} ]]; then
+		if [[ ${#params[@]} > 4 ]]; then
+		    json=`echo "${json}" | jq ".${params[2]}=[]"`
+		    for val in "${params[@]:3}"; do
+			json=`echo "${json}" | jq ".${params[2]}+=[${val}]"`
+		    done
+		else
+		    json=`echo "${json}" | jq ".${params[2]}=\"${params[3]}\""`
+		fi
+		[[ -n ${json} ]] && echo "${json}" | jq . 2>/dev/null > "${config}"
+	    else
+		return 1
+	    fi
 	fi
+    elif [[ ${params[1]} =~ (import|IMPORT) ]]; then
+	echo "${params[2]}" | jq . 2/dev/null > "${GUNICORN_DIR}/conf.d/${params[0]}.json"
+	return "${?}"
     fi
     return 0
 }
