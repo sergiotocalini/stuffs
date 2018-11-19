@@ -111,7 +111,7 @@ gunicorn_config() {
 	    fi
 	fi
     elif [[ ${params[1]} =~ (import|IMPORT) ]]; then
-	echo "${params[2]}" | jq . 2/dev/null > "${GUNICORN_DIR}/conf.d/${params[0]}.json"
+	echo "${params[2]}" | jq . 2>/dev/null > "${GUNICORN_DIR}/conf.d/${params[0]}.json"
 	return "${?}"
     fi
     return 0
