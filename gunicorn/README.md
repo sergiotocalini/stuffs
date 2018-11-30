@@ -88,3 +88,47 @@ Also to create the virtual env and install the requirements.txt file we can use 
 
 #~
 ```
+
+## Systemd
+To enable the project on systemd we can create the following file.
+```
+~# cat /etc/systemd/system/example.service
+[Unit]
+Description=Example Description
+After=network.target
+SourcePath=/etc/init.d/gunicorn
+
+[Service]
+Type=simple
+ExecStart=/etc/init.d/gunicorn start example
+ExecStop=/etc/init.d/gunicorn stop example
+RemainAfterExit=yes
+Restart=no
+TimeoutSec=5min
+IgnoreSIGPIPE=no
+KillMode=process
+GuessMainPID=no
+
+[Install]
+WantedBy=multi-user.target
+~# systemctl daemon-reload
+~# systemctl enable example
+~# systemctl restart example
+~# systemctl status example
+● example.service - Example Description
+   Loaded: loaded (/etc/init.d/gunicorn; enabled; vendor preset: enabled)
+   Active: active (exited) since Fri 2018-11-30 09:56:23 UTC; 5min ago
+ Main PID: 5874 (code=exited, status=0/SUCCESS)
+   CGroup: /system.slice/example.service
+           ├─5919 /etc/gunicorn/venvs/example/bin/python2 /etc/gunicorn/venvs/example/bin/gunicorn ...
+           ├─5923 /etc/gunicorn/venvs/example/bin/python2 /etc/gunicorn/venvs/example/bin/gunicorn ...
+           ├─5924 /etc/gunicorn/venvs/example/bin/python2 /etc/gunicorn/venvs/example/bin/gunicorn ...
+           ├─5926 /etc/gunicorn/venvs/example/bin/python2 /etc/gunicorn/venvs/example/bin/gunicorn ...
+           ├─5928 /etc/gunicorn/venvs/example/bin/python2 /etc/gunicorn/venvs/example/bin/gunicorn ...
+           └─5930 /etc/gunicorn/venvs/example/bin/python2 /etc/gunicorn/venvs/example/bin/gunicorn ...
+
+Nov 30 09:56:23 apy01.example.com systemd[1]: Stopped Example Description.
+Nov 30 09:56:23 apy01.example.com systemd[1]: Started Example Description.
+Nov 30 09:56:24 apy01.example.com gunicorn[5874]: Starting: example ( Example Description )
+~#
+```
