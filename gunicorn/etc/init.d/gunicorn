@@ -128,8 +128,8 @@ gunicorn_virtualenv() {
 	
 	if [[ -n ${attr_runtime_virtualenv/null} ]]; then
 	    if [ ! -f "${VIRTUALENV_PATH}/${attr_name}/bin/activate" ]; then
-		if [[ "${attr_runtime_virtualenv}" =~ (python3|py3|p3|3) ]]; then
-		    opts[${#opts[@]}]="-p python3"
+		if [[ ! "${attr_runtime_virtualenv}" =~ (yes|YES|enable|ENABLE|true|TRUE) ]]; then
+		    opts[${#opts[@]}]="-p ${attr_runtime_virtualenv}"
 		fi
 		virtualenv ${opts[@]} "${VIRTUALENV_PATH}/${attr_name}"
 	    fi

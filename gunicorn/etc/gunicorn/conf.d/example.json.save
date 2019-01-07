@@ -16,6 +16,10 @@
 	},
 	"port": [
             7000
+	],
+	"tags": [
+	    "example",
+	    "pedro"
 	]
     },
     "syslog": {
