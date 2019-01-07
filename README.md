@@ -1,5 +1,5 @@
 # stuffs
 Stuff's
 
-* [Gunicorn]
-* [Springboot]
+* [Gunicorn](https://github.com/sergiotocalini/stuffs/tree/master/gunicorn)
+* [Springboot](https://github.com/sergiotocalini/stuffs/tree/master/springboot)
