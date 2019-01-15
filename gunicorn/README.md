@@ -53,8 +53,9 @@ We need to enable the projects we want to run with gunicorn using json format as
   },
   "syslog": {
      "enable": true,
-     "prefix": "gunicorn.example",
-     "facility": "user"
+     "prefix": "example",
+     "facility": "user",
+     "address": "unix:///run/systemd/journal/syslog"
   },
   "scripts": {
 	  "start": "",
