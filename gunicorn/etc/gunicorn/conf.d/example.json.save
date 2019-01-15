@@ -24,8 +24,9 @@
     },
     "syslog": {
         "enable": true,
-	"prefix": "gunicorn.example",
-	"facility": "user"
+	"prefix": "example",
+	"facility": "user",
+	"address": "unix:///run/systemd/journal/syslog"
     },
     "scripts": {
 	"start": "",

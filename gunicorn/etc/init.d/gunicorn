@@ -166,6 +166,7 @@ gunicorn_start() {
        attr_syslog_enable=`jq -r ".syslog.enable" ${json} 2>/dev/null`
        attr_syslog_prefix=`jq -r ".syslog.prefix" ${json} 2>/dev/null`
        attr_syslog_facility=`jq -r ".syslog.facility" ${json} 2>/dev/null`
+       attr_syslog_address=`jq -r ".syslog.address" ${json} 2>/dev/null`
        
        DAEMON=${GUNICORN_DAEMON}
        if [[ -n ${attr_runtime_virtualenv/null} ]]; then
@@ -178,6 +179,7 @@ gunicorn_start() {
 	   GUNICORN_SYSLOG[0]="--log-syslog"
 	   GUNICORN_SYSLOG[1]="--log-syslog-prefix ${attr_syslog_prefix/null/gunicorn.${attr_name}}"
 	   GUNICORN_SYSLOG[2]="--log-syslog-facility ${attr_syslog_facility/null/user}"
+	   GUNICORN_SYSLOG[3]="--log-syslog-to ${attr_syslog_address/null/'unix:///run/systemd/journal/syslog'}"
        fi
        GUNICORN_SYSLOG=`printf '%s ' ${GUNICORN_SYSLOG[@]}`
 
