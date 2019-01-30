@@ -49,6 +49,9 @@ We need to enable the projects we want to run with gunicorn using json format as
      },
      "port": [
         7000
+     ],
+     "tags": [
+	 "example"
      ]
   },
   "syslog": {
