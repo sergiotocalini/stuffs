@@ -43,6 +43,9 @@ We need to enable the projects we want to run with gunicorn using json format as
      },
      "port": [
         8080
+     ],
+     "tags": [
+        "example"
      ]
   },
   "scripts": {
