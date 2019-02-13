@@ -260,7 +260,7 @@ gunicorn_status() {
        attr_url=`jq -r '.monitoring.ws.url' "${json}" 2>/dev/null`
 
        if [[ -n ${attr_url/null/} ]]; then
-	   rval=`curl --insecure -s ${attr_url} -o /dev/null -w "%{http_code}\n" 2>/dev/null`
+	   rval=`curl --max-time 10 --insecure -s ${attr_url} -o /dev/null -w "%{http_code}\n" 2>/dev/null`
 	   rcode="${?}"
 	   if [[ ${rcode} == 0 ]]; then
 	       valid_codes=`jq -r '.monitoring.ws.codes|@sh' "${json}" 2>/dev/null`
