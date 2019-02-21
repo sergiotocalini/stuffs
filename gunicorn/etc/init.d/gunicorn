@@ -134,8 +134,8 @@ gunicorn_virtualenv() {
 		virtualenv ${opts[@]} "${VIRTUALENV_PATH}/${attr_name}"
 	    fi
 	    source "${VIRTUALENV_PATH}/${attr_name}/bin/activate"
-	    pip install gunicorn
-	    [ -f "${attr_runtime_home}/requirements.txt" ] && pip install -r "${attr_runtime_home}/requirements.txt"
+	    pip -q install gunicorn
+	    [ -f "${attr_runtime_home}/requirements.txt" ] && pip -q install -r "${attr_runtime_home}/requirements.txt"
 	    pip list
 	    deactivate
 	else
