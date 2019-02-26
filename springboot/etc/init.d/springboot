@@ -74,45 +74,105 @@ springboot_list() {
 springboot_config() {
     params=( ${@} )
     # param1: <project>
-    # param2: (set|get)
+    # param2: (set|get|inject)
     # param3: <attribute>
     # paramx: values (optional for set option)
     [[ -n ${params[0]} || -n ${params[1]} || -n ${params[2]} ]] || return 1
 
-    config="${SPRING_DIR}/conf.d/${params[0]}.json"
-    [ -f "${config}" ] || return 1
 
-    if [[ ${params[1]} =~ (get|GET) ]]; then
-	jq -rc ".${params[2]}" "${config}" 2>/dev/null
-	if [[ ${?} != 0 ]]; then
-	    return 1
-	fi
-    elif [[ ${params[1]} =~ (set|SET) ]]; then
-	json=`jq . "${config}" 2>/dev/null`
-	if [[ -n ${json} ]]; then
-            if [[ ${#params[@]} > 4 ]]; then
-		json=`echo "${json}" | jq ".${params[2]}=[]"`
-		for val in "${params[@]:3}"; do
-                    json=`echo "${json}" | jq ".${params[2]}+=[${val}]"`
-		done
-            else
-		json=`echo "${json}" | jq ".${params[2]}=\"${params[3]}\""`
+    if [[ ${params[1]} =~ (get|GET|set|SET) ]]; then
+	config="${SPRING_DIR}/conf.d/${params[0]}.json"
+	[ -f "${config}" ] || return 1
+	if [[ ${params[1]} =~ (get|GET) ]]; then
+	    jq -rc ".${params[2]}" "${config}" 2>/dev/null
+	    if [[ ${?} != 0 ]]; then
+		return 1
 	    fi
-            [[ -n ${json} ]] && echo "${json}" | jq . 2>/dev/null > "${config}"
-	else
-	    return 1
+	elif [[ ${params[1]} =~ (set|SET) ]]; then
+	    json=`jq . "${config}" 2>/dev/null`
+	    if [[ -n ${json} ]]; then
+		if [[ ${#params[@]} > 4 ]]; then
+		    json=`echo "${json}" | jq ".${params[2]}=[]"`
+		    for val in "${params[@]:3}"; do
+			json=`echo "${json}" | jq ".${params[2]}+=[${val}]"`
+		    done
+		else
+		    json=`echo "${json}" | jq ".${params[2]}=\"${params[3]}\""`
+		fi
+		[[ -n ${json} ]] && echo "${json}" | jq . 2>/dev/null > "${config}"
+	    else
+		return 1
+	    fi
 	fi
+    elif [[ ${params[1]} =~ (inject|INJECT) ]]; then
+	jq . ${params[2]} 2>/dev/null > "${SPRING_DIR}/conf.d/${params[0]}.json"
+	rcode="${?}"
     fi
-    return 0
+    return "${rcode:-0}"
+}
+
+springboot_status() {
+    local_name="${1}"
+    local_show="${2:-no}"
+    [[ -n "${name}" ]] && return -1
+    res=0
+    for json in ${SPRING_DIR}/conf.d/*.json;do
+       attr_name=`jq -r ".name" "${json}" 2>/dev/null`
+       [[ ${local_name} != ${attr_name} ]] && continue
+       attr_desc=`jq -r ".desc" "${json}" 2>/dev/null`
+       attr_url=`jq -r '.monitoring.ws.url' "${json}" 2>/dev/null`
+
+       if [[ -n ${attr_url/null/} ]]; then
+	   rval=`curl --max-time 10 --insecure -s ${attr_url} -o /dev/null -w "%{http_code}\n" 2>/dev/null`
+	   rcode="${?}"
+	   if [[ ${rcode} == 0 ]]; then
+	       valid_codes=`jq -r '.monitoring.ws.codes|@sh' "${json}" 2>/dev/null`
+	       for code in ${valid_codes[@]:-200}; do
+		   if [[ ${code} == ${rval} ]]; then
+		       res=1
+		       break
+		   fi
+	       done
+	   fi
+       else
+	   attr_port=(`jq -r '.monitoring.port|@sh' ${json} 2>/dev/null`)
+	   for port in ${attr_port[@]}; do
+	       pid=`sudo lsof -Pi :${port} -sTCP:LISTEN -t 2>/dev/null`
+	       rcode="${?}"
+	       if [[ ${rcode} == 0 ]]; then
+		   res=1
+	       else
+		   res=0
+	       fi
+           done
+       fi
+       break
+    done	   
+    if [ ${res:-0} == 0 ]; then
+       [ -f "${SPRING_RUN}/${attr_name}.pid" ] && rm "${SPRING_RUN}/${attr_name}.pid"
+       if [[ ${local_show} =~ (yes|YES|y|1) ]]; then
+	  echo -e "Status: ${attr_name} ( ${attr_desc} )"
+	  echo -e "   Pid: Is not running!"
+       fi
+       return 1
+    else
+       if [[ ${local_show} =~ (yes|YES|y|1) ]]; then
+	   echo -e "Status: ${attr_name} ( ${attr_desc} )"
+	   echo -e "   Pid: `cat \"${SPRING_RUN}/${attr_name}.pid\" 2>/dev/null`"
+       elif [[ ${local_show} =~ (pid|process) ]]; then
+	   echo "`cat \"${SPRING_RUN}/${attr_name}.pid\" 2>/dev/null`"
+       fi
+       return 0
+    fi
 }
 
 case "$1" in
     list)
 	springboot_list "${@:2}"
 	;;
-    # status)
-    # 	springboot_status "${@:2}"
-    # 	;;    
+    status)
+    	springboot_status "${@:2}"
+    	;;    
     config)
 	springboot_config "${@:2}"
 	;;

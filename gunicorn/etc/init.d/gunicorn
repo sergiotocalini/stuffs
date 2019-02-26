@@ -81,7 +81,7 @@ gunicorn_list() {
 gunicorn_config() {
     params=( ${@} )
     # param1: <project>
-    # param2: (set|get)
+    # param2: (set|get|inject)
     # param3: <attribute>
     # paramx: values (optional for set option)
     [[ -n ${params[0]} || -n ${params[1]} || -n ${params[2]} ]] || return 1
@@ -296,9 +296,9 @@ gunicorn_status() {
     else
        if [[ ${local_show} =~ (yes|YES|y|1) ]]; then
 	   echo -e "Status: ${attr_name} ( ${attr_desc} )"
-	   echo -e "   Pid: `cat \"${GUNICORN_RUN}/${attr_name}.pid\"`"
+	   echo -e "   Pid: `cat \"${GUNICORN_RUN}/${attr_name}.pid\" 2>/dev/null`"
        elif [[ ${local_show} =~ (pid|process) ]]; then
-	   echo "`cat \"${GUNICORN_RUN}/${attr_name}.pid\"`"
+	   echo "`cat \"${GUNICORN_RUN}/${attr_name}.pid\" 2>/dev/null`"
        fi
        return 0
     fi
