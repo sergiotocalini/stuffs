@@ -117,52 +117,59 @@ springboot_status() {
     [[ -n "${name}" ]] && return -1
     res=0
     for json in ${SPRING_DIR}/conf.d/*.json;do
-       attr_name=`jq -r ".name" "${json}" 2>/dev/null`
-       [[ ${local_name} != ${attr_name} ]] && continue
-       attr_desc=`jq -r ".desc" "${json}" 2>/dev/null`
-       attr_url=`jq -r '.monitoring.ws.url' "${json}" 2>/dev/null`
+	attr_name=`jq -r ".name" "${json}" 2>/dev/null`
+	[[ ${local_name} != ${attr_name} ]] && continue
+	attr_desc=`jq -r ".desc" "${json}" 2>/dev/null`
+	attr_url=`jq -r '.monitoring.ws.url' "${json}" 2>/dev/null`
+	attr_port=(`jq -r '.monitoring.port|@sh' ${json} 2>/dev/null`)
 
-       if [[ -n ${attr_url/null/} ]]; then
-	   rval=`curl --max-time 10 --insecure -s ${attr_url} -o /dev/null -w "%{http_code}\n" 2>/dev/null`
-	   rcode="${?}"
-	   if [[ ${rcode} == 0 ]]; then
-	       valid_codes=`jq -r '.monitoring.ws.codes|@sh' "${json}" 2>/dev/null`
-	       for code in ${valid_codes[@]:-200}; do
-		   if [[ ${code} == ${rval} ]]; then
-		       res=1
-		       break
-		   fi
-	       done
-	   fi
-       else
-	   attr_port=(`jq -r '.monitoring.port|@sh' ${json} 2>/dev/null`)
-	   for port in ${attr_port[@]}; do
-	       pid=`sudo lsof -Pi :${port} -sTCP:LISTEN -t 2>/dev/null`
-	       rcode="${?}"
-	       if [[ ${rcode} == 0 ]]; then
-		   res=1
-	       else
-		   res=0
-	       fi
-           done
-       fi
-       break
+	if [[ -n ${attr_url/null/} ]]; then
+	    rval=`curl --max-time 10 --insecure -s ${attr_url} -o /dev/null -w "%{http_code}\n" 2>/dev/null`
+	    rcode="${?}"
+	    if [[ ${rcode} == 0 ]]; then
+		valid_codes=`jq -r '.monitoring.ws.codes|@sh' "${json}" 2>/dev/null`
+		for code in ${valid_codes[@]:-200}; do
+		    if [[ ${code} == ${rval} ]]; then
+			res=1
+			break
+		    fi
+		done
+	    fi
+	elif [[ -n ${attr_port/null/} ]]; then
+	    for port in ${attr_port[@]}; do
+		pid=`sudo lsof -Pi :${port} -sTCP:LISTEN -t 2>/dev/null`
+		rcode="${?}"
+		if [[ ${rcode} == 0 ]]; then
+		    res=1
+		else
+		    res=0
+		fi
+            done
+	else
+	    app_exec=`jq -r '.exec' ${json} 2>/dev/null`
+            pid=`sudo jps -l 2>/dev/null | grep "${app_exec}" | awk '{print $1}'`
+	    if [[ -n ${pid} ]]; then
+		res=1           
+            fi
+	fi
+	break
     done	   
     if [ ${res:-0} == 0 ]; then
-       [ -f "${SPRING_RUN}/${attr_name}.pid" ] && rm "${SPRING_RUN}/${attr_name}.pid"
-       if [[ ${local_show} =~ (yes|YES|y|1) ]]; then
-	  echo -e "Status: ${attr_name} ( ${attr_desc} )"
-	  echo -e "   Pid: Is not running!"
-       fi
-       return 1
+	[ -f "${SPRING_RUN}/${attr_name}.pid" ] && rm "${SPRING_RUN}/${attr_name}.pid"
+	if [[ ${local_show} =~ (yes|YES|y|1) ]]; then
+	    echo -e "Status: ${attr_name} ( ${attr_desc} )"
+	    echo -e "   Pid: Is not running!"
+	fi
+	return 1
     else
-       if [[ ${local_show} =~ (yes|YES|y|1) ]]; then
-	   echo -e "Status: ${attr_name} ( ${attr_desc} )"
-	   echo -e "   Pid: `cat \"${SPRING_RUN}/${attr_name}.pid\" 2>/dev/null`"
-       elif [[ ${local_show} =~ (pid|process) ]]; then
-	   echo "`cat \"${SPRING_RUN}/${attr_name}.pid\" 2>/dev/null`"
-       fi
-       return 0
+	[ -z ${pid} ] && pid=`cat \"${SPRING_RUN}/${attr_name}.pid\" 2>/dev/null` 
+	if [[ ${local_show} =~ (yes|YES|y|1) ]]; then
+	    echo -e "Status: ${attr_name} ( ${attr_desc} )"
+	    echo -e "   Pid: ${pid}"
+	elif [[ ${local_show} =~ (pid|process) ]]; then
+	    echo "${pid}"
+	fi
+	return 0
     fi
 }
 
