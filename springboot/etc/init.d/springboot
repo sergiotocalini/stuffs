@@ -162,7 +162,7 @@ springboot_status() {
 	fi
 	return 1
     else
-	if [ -z ${pid} && -f "${SPRING_RUN}/${attr_name}.pid" ]; then
+	if [[ -z ${pid} && -f "${SPRING_RUN}/${attr_name}.pid" ]]; then
 	    pid=`cat \"${SPRING_RUN}/${attr_name}.pid\" 2>/dev/null`
 	else
             pid=`sudo jps -l 2>/dev/null | grep "${attr_exec}" | awk '{print $1}'`
