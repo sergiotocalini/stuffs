@@ -11,7 +11,7 @@
 ### END INIT INFO
 
 NAME=$(basename $0)
-DESC="Springboot Java Application"
+DESC="Java Springboot Application"
 SPRING_DIR="/etc/springboot"
 SPRING_LOG="/var/log/springboot"
 SPRING_RUN="/var/run/springboot"

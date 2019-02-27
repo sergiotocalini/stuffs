@@ -11,13 +11,13 @@
 ### END INIT INFO
 
 NAME=$(basename $0)
-DESC="Gunicorn Python Application"
-GUNICORN_DAEMON=/usr/bin/gunicorn
-GUNICORN_DIR=/etc/gunicorn
-GUNICORN_LOG=/var/log/gunicorn
-GUNICORN_RUN=/var/run/gunicorn
-VIRTUALENV_PATH=/etc/gunicorn/venvs
-RUN_AS="python"
+DESC="Python Gunicorn Application"
+GUNICORN_DAEMON="/usr/bin/gunicorn"
+GUNICORN_DIR="/etc/gunicorn"
+GUNICORN_LOG="/var/log/gunicorn"
+GUNICORN_RUN="/var/run/gunicorn"
+GUNICORN_USER="gunicorn"
+VIRTUALENV_PATH="/etc/gunicorn/venvs"
 APP_NAME="${2}"
 
 # Source networking configuration.
@@ -193,8 +193,8 @@ gunicorn_start() {
 
 	if [[ -n ${attr_runtime_user/null} && id ${attr_runtime_user} 2>&1 1>/dev/null ]]; then
 	    GUNICORN_USER="${attr_runtime_user}"
-	elif id "${RUN_AS}" 2>&1 1>/dev/null; then
-	    GUNICORN_USER="${RUN_AS}"
+	elif [[ -n ${GUNICORN_USER} && id "${GUNICORN_USER}" 2>&1 1>/dev/null ]]; then
+	    GUNICORN_USER="${GUNICORN_USER}"
 	else
 	    GUNICORN_USER=`whoami 2>/dev/null`
 	fi
