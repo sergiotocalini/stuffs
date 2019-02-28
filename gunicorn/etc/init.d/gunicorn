@@ -191,13 +191,13 @@ gunicorn_start() {
 	fi
 	GUNICORN_STATSD=`printf '%s ' ${GUNICORN_STATSD[@]}`
 
-	if [[ -n ${attr_runtime_user/null} && id ${attr_runtime_user} 2>&1 1>/dev/null ]]; then
-	    GUNICORN_USER="${attr_runtime_user}"
-	elif [[ -n ${GUNICORN_USER} && id "${GUNICORN_USER}" 2>&1 1>/dev/null ]]; then
-	    GUNICORN_USER="${GUNICORN_USER}"
-	else
-	    GUNICORN_USER=`whoami 2>/dev/null`
-	fi
+        if [[ -n ${attr_runtime_user/null} ]] && id "${attr_runtime_user}" > /dev/null 2>&1; then
+            GUNICORN_USER="${attr_runtime_user}"
+        elif [[ -n ${GUNICORN_USER} ]] && id "${GUNICORN_USER}" > /dev/null 2>&1; then
+            GUNICORN_USER="${GUNICORN_USER}"
+        else
+            GUNICORN_USER=`whoami 2>/dev/null`
+        fi
 	
 	${DAEMON} ${attr_runtime_opts} \
 		  -u ${GUNICORN_USER} \
