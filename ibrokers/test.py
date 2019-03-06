@@ -20,7 +20,7 @@ class TWS(EClient, EWrapper):
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 try:                                        
     tws = TWS()
-    tws.connect('127.0.0.1', 4002, clientId=1)
+    tws.connect('ibgw.prod.amana.vpn', 4002, clientId=1)
     tws.conn.socket.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
     tws.run()
 except KeyboardInterrupt:
