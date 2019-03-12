@@ -175,7 +175,6 @@ gunicorn_start() {
 	    source ${VIRTUALENV_PATH}/${attr_name}/bin/activate
 	fi
 
-	GUNICORN_SYSLOG=()
 	if [[ ${attr_syslog_enable} =~ (yes|YES|true|TRUE) ]]; then
 	    GUNICORN_SYSLOG[0]="--log-syslog"
 	    GUNICORN_SYSLOG[1]="--log-syslog-prefix ${attr_syslog_prefix/null/gunicorn.${attr_name}}"
@@ -184,7 +183,6 @@ gunicorn_start() {
 	fi
 	GUNICORN_SYSLOG=`printf '%s ' ${GUNICORN_SYSLOG[@]}`
 
-	GUNICORN_STATSD=()
 	if [[ -n ${attr_monitoring_statsd_host/null} && -n ${attr_monitoring_statsd_prefix/null} ]]; then
 	    GUNICORN_STATSD[0]="--statsd-host=${attr_monitoring_statsd_host}"
 	    GUNICORN_STATSD[1]="--statsd-prefix=${attr_monitoring_statsd_prefix}"
@@ -208,8 +206,8 @@ gunicorn_start() {
 		  ${GUNICORN_SYSLOG} \
        		  --error-logfile ${GUNICORN_LOG}/${attr_name}.error.log \
        		  --access-logfile ${GUNICORN_LOG}/${attr_name}.access.log -D
-	
-	if [[ "${attr_runtime_virtualenv}" =~ (yes|YES) ]]; then
+
+	if [[ -n ${attr_runtime_virtualenv/null} ]]; then
 	    deactivate
 	fi
 	echo ""
