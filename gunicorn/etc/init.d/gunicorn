@@ -128,7 +128,7 @@ gunicorn_virtualenv() {
 	
 	if [[ -n ${attr_runtime_virtualenv/null} ]]; then
 	    if [[ ${params[1]} == 'activate' ]]; then
-		[[ ${APP_NAME} =~ (ALL) ]] || continue
+		[[ ${APP_NAME} =~ (ALL) ]] && continue
 		[ -f "${VIRTUALENV_PATH}/${attr_name}/bin/activate" ] && source "${VIRTUALENV_PATH}/${attr_name}/bin/activate"
 	    elif [[ ${params[1]} == 'cleanup' ]]; then
 		[ -d "${VIRTUALENV_PATH}/${attr_name}" ] && rm -Rf "${VIRTUALENV_PATH}/${attr_name}"
