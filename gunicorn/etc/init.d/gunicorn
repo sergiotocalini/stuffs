@@ -127,18 +127,37 @@ gunicorn_virtualenv() {
 	attr_runtime_home=`jq -r ".runtime.home" ${json} 2>/dev/null`
 	
 	if [[ -n ${attr_runtime_virtualenv/null} ]]; then
-	    if [ ! -f "${VIRTUALENV_PATH}/${attr_name}/bin/activate" ]; then
-		if [[ ! "${attr_runtime_virtualenv}" =~ (yes|YES|enable|ENABLE|true|TRUE) ]]; then
-		    opts[${#opts[@]}]="-p ${attr_runtime_virtualenv}"
+	    if [[ ${params[0]} == 'activate' ]]; then
+		[[ ${APP_NAME} =~ (ALL) ]] || continue
+		[ -f "${VIRTUALENV_PATH}/${attr_name}/bin/activate" ] && source "${VIRTUALENV_PATH}/${attr_name}/bin/activate"
+	    elif [[ ${params[0]} == 'cleanup' ]]; then
+		[ -d "${VIRTUALENV_PATH}/${attr_name}" ] && rm -Rf "${VIRTUALENV_PATH}/${attr_name}"
+	    elif [[ ${params[0]} == 'show' ]]; then
+		if [ -f "${VIRTUALENV_PATH}/${attr_name}/bin/activate" ]; then
+		    echo "${attr_name}: ${VIRTUALENV_PATH}/${attr_name}"
+		    if [[ ${params[1]} == 'details' ]]; then
+			source "${VIRTUALENV_PATH}/${attr_name}/bin/activate"
+			python --version
+			pip list
+			deactivate
+		    fi
+		else
+		    echo "${attr_name}: Virtualenv doesn't exist, please create."
 		fi
-		virtualenv ${opts[@]} "${VIRTUALENV_PATH}/${attr_name}"
+	    else
+		if [ ! -f "${VIRTUALENV_PATH}/${attr_name}/bin/activate" ]; then
+		    if [[ ! "${attr_runtime_virtualenv}" =~ (yes|YES|enable|ENABLE|true|TRUE) ]]; then
+			opts[${#opts[@]}]="-p ${attr_runtime_virtualenv}"
+		    fi
+		    virtualenv ${opts[@]} "${VIRTUALENV_PATH}/${attr_name}"
+		fi
+		source "${VIRTUALENV_PATH}/${attr_name}/bin/activate"
+		pip -q install --upgrade pip setuptools
+		pip -q install gunicorn
+		[ -f "${attr_runtime_home}/requirements.txt" ] && pip -q install -r "${attr_runtime_home}/requirements.txt"
+		pip list
+		deactivate
 	    fi
-	    source "${VIRTUALENV_PATH}/${attr_name}/bin/activate"
-	    pip -q install --upgrade pip setuptools
-	    pip -q install gunicorn
-	    [ -f "${attr_runtime_home}/requirements.txt" ] && pip -q install -r "${attr_runtime_home}/requirements.txt"
-	    pip list
-	    deactivate
 	else
 	    return 1
 	fi
