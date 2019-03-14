@@ -127,10 +127,7 @@ gunicorn_virtualenv() {
 	attr_runtime_home=`jq -r ".runtime.home" ${json} 2>/dev/null`
 	
 	if [[ -n ${attr_runtime_virtualenv/null} ]]; then
-	    if [[ ${params[1]} == 'activate' ]]; then
-		[[ ${APP_NAME} =~ (ALL) ]] && continue
-		[ -f "${VIRTUALENV_PATH}/${attr_name}/bin/activate" ] && source "${VIRTUALENV_PATH}/${attr_name}/bin/activate"
-	    elif [[ ${params[1]} == 'cleanup' ]]; then
+	    if [[ ${params[1]} == 'cleanup' ]]; then
 		[ -d "${VIRTUALENV_PATH}/${attr_name}" ] && rm -Rf "${VIRTUALENV_PATH}/${attr_name}"
 	    elif [[ ${params[1]} == 'show' ]]; then
 		if [ -f "${VIRTUALENV_PATH}/${attr_name}/bin/activate" ]; then
