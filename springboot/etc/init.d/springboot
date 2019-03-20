@@ -147,7 +147,8 @@ springboot_status() {
 		fi
             done
 	else
-            pid=`sudo jps -l 2>/dev/null | grep "${attr_exec}" | awk '{print $1}'`
+            pid=`ps -ef 2>/dev/null | grep "${attr_exec}" | \
+	    	 grep -v "grep" | awk '{print $1}' | head -1`
 	    if [[ -n ${pid} ]]; then
 		res=1           
             fi
@@ -165,7 +166,8 @@ springboot_status() {
 	if [[ -z ${pid} && -f "${SPRING_RUN}/${attr_name}.pid" ]]; then
 	    pid=`cat \"${SPRING_RUN}/${attr_name}.pid\" 2>/dev/null`
 	else
-            pid=`sudo jps -l 2>/dev/null | grep "${attr_exec}" | awk '{print $1}'`
+            pid=`ps -ef 2>/dev/null | grep "${attr_exec}" | \
+	         grep -v "grep" | awk '{print $2}' | head -1`
 	fi
 	if [[ ${local_show} =~ (yes|YES|y|1) ]]; then
 	    echo -e "Status: ${attr_name} ( ${attr_desc} )"
