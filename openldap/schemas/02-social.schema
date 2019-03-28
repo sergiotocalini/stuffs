@@ -28,6 +28,12 @@ attributetype ( 1.3.6.1.4.1.13769.2.2.4 NAME 'SkypeID'
         SUBSTR caseIgnoreSubstringsMatch
         SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
 
+attributetype ( 1.3.6.1.4.1.13769.2.2.5 NAME 'GithubID'
+        DESC 'Github ID'
+        EQUALITY caseIgnoreMatch
+        SUBSTR caseIgnoreSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
 #
 #######################################################################
 #
@@ -38,5 +44,9 @@ attributetype ( 1.3.6.1.4.1.13769.2.2.4 NAME 'SkypeID'
 objectclass ( 1.3.6.1.4.1.13769.2.1.1 NAME ('Social' 'SocialMedia')
 	DESC 'Additional attributes for a Social Media'
 	SUP top AUXILIARY
-	MAY ( GoogleID $ SkypeID $ FacebookID $ TwitterID ) )
+	MAY (
+	  GoogleID $ SkypeID $ FacebookID $ TwitterID $
+	  GithubID
+	)
+)
 
