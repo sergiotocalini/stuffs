@@ -238,7 +238,9 @@ gunicorn_stop() {
 	attr_desc=`jq -r ".desc" ${json} 2>/dev/null`
 
 	echo -ne "Stopping: ${attr_name} ( ${attr_desc} )"
-	if gunicorn_status "${attr_name}"; then
+	pid=$(gunicorn_status "${attr_name}" pid)
+	if [ ${?} == 0 ]; then
+	    [ -f "${GUNICORN_RUN}/${attr_name}.pid" ] || echo "${pid}" > "${GUNICORN_RUN}/${attr_name}.pid"
             kill -SIGQUIT `cat "${GUNICORN_RUN}/${attr_name}.pid"`
 	    rm "${GUNICORN_RUN}/${attr_name}.pid"
 	fi
@@ -286,6 +288,10 @@ gunicorn_status() {
 	    rval=`curl --max-time 10 --insecure -s ${attr_url} -o /dev/null -w "%{http_code}\n" 2>/dev/null`
 	    rcode="${?}"
 	    if [[ ${rcode} == 0 ]]; then
+                pattern='^(([a-z]{3,5})://)?((([^:\/]+)(:([^@\/]*))?@)?([^:\/?]+)(:([0-9]+))?)(\/[^?]*)?(\?[^#]*)?(#.*)?$'
+                [[ "${attr_url}" =~ $pattern ]] || return 1
+                regex_match=( ${BASH_REMATCH[@]} )
+                pid=`sudo lsof -Pi :${regex_match[6]:-${regex_match[2]}} -sTCP:LISTEN -t 2>/dev/null | sort | head -1`
 		valid_codes=`jq -r '.monitoring.ws.codes|@sh' "${json}" 2>/dev/null`
 		for code in ${valid_codes[@]:-200}; do
 		    if [[ ${code} == ${rval} ]]; then
@@ -297,7 +303,7 @@ gunicorn_status() {
 	else
 	    attr_port=(`jq -r '.monitoring.port|@sh' ${json} 2>/dev/null`)
 	    for port in ${attr_port[@]}; do
-		pid=`sudo lsof -Pi :${port} -sTCP:LISTEN -t 2>/dev/null`
+		pid=`sudo lsof -Pi :${port} -sTCP:LISTEN -t 2>/dev/null | sort | head -1`
 		rcode="${?}"
 		if [[ ${rcode} == 0 ]]; then
 		    res=1
@@ -309,13 +315,15 @@ gunicorn_status() {
 	break
     done	   
     if [ ${res:-0} == 0 ]; then
-	[ -f "${GUNICORN_RUN}/${attr_name}.pid" ] && rm "${GUNICORN_RUN}/${attr_name}.pid"
+	[ -f "${GUNICORN_RUN}/${attr_name}.pid" ] && rm "${GUNICORN_RUN}/${attr_name}.pid" 2>/dev/null
 	if [[ ${local_show} =~ (yes|YES|y|1) ]]; then
 	    echo -e "Status: ${attr_name} ( ${attr_desc} )"
 	    echo -e "   Pid: Is not running!"
 	fi
 	return 1
     else
+	pid_file=`cat "${GUNICORN_RUN}/${attr_name}.pid" 2>/dev/null`
+	[[ ${pid} != ${pid_file} ]] && echo "${pid}" > "${GUNICORN_RUN}/${attr_name}.pid"
 	if [[ ${local_show} =~ (yes|YES|y|1) ]]; then
 	    echo -e "Status: ${attr_name} ( ${attr_desc} )"
 	    echo -e "   Pid: `cat \"${GUNICORN_RUN}/${attr_name}.pid\" 2>/dev/null`"
