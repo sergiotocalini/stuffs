@@ -1,0 +1,4 @@
+unlink /sbin/rc3.d/S900zabbix_agentd
+rm -f /sbin/init.d/zabbix_agentd
+userdel zabbix
+groupdel zabbix

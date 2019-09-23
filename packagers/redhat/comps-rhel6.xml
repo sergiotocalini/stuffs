@@ -1,0 +1,508 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE comps PUBLIC "-//Red Hat, Inc.//DTD Comps info//EN" "comps.dtd">
+<comps>
+  <group>
+    <id>base</id>
+    <name>Base</name>
+    <name xml:lang='es'>Base</name>
+    <description>The basic installation of Red Hat Enterprise Linux.</description>
+    <description xml:lang='es'>Instalación básica de Red Hat Enterprise Linux.</description>
+    <default>true</default>
+    <uservisible>true</uservisible>
+    <packagelist>
+      <packagereq type='mandatory'>alsa-utils</packagereq>
+      <packagereq type='mandatory'>at</packagereq>
+      <packagereq type='mandatory'>authconfig</packagereq>
+      <packagereq type='mandatory'>bc</packagereq>
+      <packagereq type='mandatory'>bind-utils</packagereq>
+      <packagereq type='mandatory'>crontabs</packagereq>
+      <packagereq type='mandatory'>cyrus-sasl-plain</packagereq>
+      <packagereq type='mandatory'>dbus</packagereq>
+      <packagereq type='mandatory'>ed</packagereq>
+      <packagereq type='mandatory'>file</packagereq>
+      <packagereq type='mandatory'>logrotate</packagereq>
+      <packagereq type='mandatory'>lsof</packagereq>
+      <packagereq type='mandatory'>man</packagereq>
+      <packagereq type='mandatory'>ntsysv</packagereq>
+      <packagereq type='mandatory'>parted</packagereq>
+      <packagereq type='mandatory'>pciutils</packagereq>
+      <packagereq type='mandatory'>psacct</packagereq>
+      <packagereq type='mandatory'>quota</packagereq>
+      <packagereq type='mandatory'>redhat-indexhtml</packagereq>
+      <packagereq type='mandatory'>setserial</packagereq>
+      <packagereq type='mandatory'>tmpwatch</packagereq>
+      <packagereq type='mandatory'>traceroute</packagereq>
+      <packagereq type='default'>Red_Hat_Enterprise_Linux-Release_Notes-6-en-US</packagereq>
+      <packagereq type='default'>abrt-addon-ccpp</packagereq>
+      <packagereq type='default'>abrt-addon-kerneloops</packagereq>
+      <packagereq type='default'>abrt-addon-python</packagereq>
+      <packagereq type='default'>abrt-cli</packagereq>
+      <packagereq type='default'>acpid</packagereq>
+      <packagereq type='default'>b43-fwcutter</packagereq>
+      <packagereq type='default'>biosdevname</packagereq>
+      <packagereq type='default'>blktrace</packagereq>
+      <packagereq type='default'>bridge-utils</packagereq>
+      <packagereq type='default'>bzip2</packagereq>
+      <packagereq type='default'>cpuspeed</packagereq>
+      <packagereq type='default'>cryptsetup-luks</packagereq>
+      <packagereq type='default'>dmraid</packagereq>
+      <packagereq type='default'>dosfstools</packagereq>
+      <packagereq type='default'>eject</packagereq>
+      <packagereq type='default'>ethtool</packagereq>
+      <packagereq type='default'>fprintd-pam</packagereq>
+      <packagereq type='default'>gnupg2</packagereq>
+      <packagereq type='default'>hunspell</packagereq>
+      <packagereq type='default'>hunspell-en</packagereq>
+      <packagereq type='default'>irqbalance</packagereq>
+      <packagereq type='default'>kexec-tools</packagereq>
+      <packagereq type='default'>ledmon</packagereq>
+      <packagereq type='default'>libaio</packagereq>
+      <packagereq type='default'>lvm2</packagereq>
+      <packagereq type='default'>man-pages</packagereq>
+      <packagereq type='default'>man-pages-overrides</packagereq>
+      <packagereq type='default'>mdadm</packagereq>
+      <packagereq type='default'>microcode_ctl</packagereq>
+      <packagereq type='default'>mlocate</packagereq>
+      <packagereq type='default'>mtr</packagereq>
+      <packagereq type='default'>nano</packagereq>
+      <packagereq type='default'>ntp</packagereq>
+      <packagereq type='default'>ntpdate</packagereq>
+      <packagereq type='default'>openssh-clients</packagereq>
+      <packagereq type='default'>pam_passwdqc</packagereq>
+      <packagereq type='default'>pcmciautils</packagereq>
+      <packagereq type='default'>pinfo</packagereq>
+      <packagereq type='default'>plymouth</packagereq>
+      <packagereq type='default'>pm-utils</packagereq>
+      <packagereq type='default'>prelink</packagereq>
+      <packagereq type='default'>rdate</packagereq>
+      <packagereq type='default'>readahead</packagereq>
+      <packagereq type='default'>rfkill</packagereq>
+      <packagereq type='default'>rng-tools</packagereq>
+      <packagereq type='default'>rsync</packagereq>
+      <packagereq type='default'>scl-utils</packagereq>
+      <packagereq type='default'>setuptool</packagereq>
+      <packagereq type='default'>smartmontools</packagereq>
+      <packagereq type='default'>sos</packagereq>
+      <packagereq type='default'>strace</packagereq>
+      <packagereq type='default'>sysstat</packagereq>
+      <packagereq type='default'>system-config-firewall-tui</packagereq>
+      <packagereq type='default'>system-config-network-tui</packagereq>
+      <packagereq type='default'>systemtap-runtime</packagereq>
+      <packagereq type='default'>tcpdump</packagereq>
+      <packagereq type='default'>tcsh</packagereq>
+      <packagereq type='default'>time</packagereq>
+      <packagereq type='default'>unzip</packagereq>
+      <packagereq type='default'>usbutils</packagereq>
+      <packagereq type='default'>vconfig</packagereq>
+      <packagereq type='default'>vim-enhanced</packagereq>
+      <packagereq type='default'>virt-what</packagereq>
+      <packagereq type='default'>wget</packagereq>
+      <packagereq type='default'>which</packagereq>
+      <packagereq type='default'>wireless-tools</packagereq>
+      <packagereq type='default'>words</packagereq>
+      <packagereq type='default'>xz</packagereq>
+      <packagereq type='default'>yum-plugin-security</packagereq>
+      <packagereq type='default'>yum-utils</packagereq>
+      <packagereq type='default'>zip</packagereq>
+      <packagereq type='optional'>PyPAM</packagereq>
+      <packagereq type='optional'>audispd-plugins</packagereq>
+      <packagereq type='optional'>brltty</packagereq>
+      <packagereq type='optional'>cpupowerutils</packagereq>
+      <packagereq type='optional'>device-mapper-persistent-data</packagereq>
+      <packagereq type='optional'>dos2unix</packagereq>
+      <packagereq type='optional'>dumpet</packagereq>
+      <packagereq type='optional'>ecryptfs-utils</packagereq>
+      <packagereq type='optional'>edac-utils</packagereq>
+      <packagereq type='optional'>genisoimage</packagereq>
+      <packagereq type='optional'>gpm</packagereq>
+      <packagereq type='optional'>kabi-yum-plugins</packagereq>
+      <packagereq type='optional'>kernel-doc</packagereq>
+      <packagereq type='optional'>linuxptp</packagereq>
+      <packagereq type='optional'>logwatch</packagereq>
+      <packagereq type='optional'>mkbootdisk</packagereq>
+      <packagereq type='optional'>mtools</packagereq>
+      <packagereq type='optional'>ncurses-term</packagereq>
+      <packagereq type='optional'>nss_db</packagereq>
+      <packagereq type='optional'>oddjob</packagereq>
+      <packagereq type='optional'>pax</packagereq>
+      <packagereq type='optional'>python-dmidecode</packagereq>
+      <packagereq type='optional'>python-volume_key</packagereq>
+      <packagereq type='optional'>rsyslog-gnutls</packagereq>
+      <packagereq type='optional'>rsyslog-gssapi</packagereq>
+      <packagereq type='optional'>rsyslog-relp</packagereq>
+      <packagereq type='optional'>sgpio</packagereq>
+      <packagereq type='optional'>sox</packagereq>
+      <packagereq type='optional'>squashfs-tools</packagereq>
+      <packagereq type='optional'>star</packagereq>
+      <packagereq type='optional'>subscription-manager-migration</packagereq>
+      <packagereq type='optional'>subscription-manager-migration-data</packagereq>
+      <packagereq type='optional'>tboot</packagereq>
+      <packagereq type='optional'>tunctl</packagereq>
+      <packagereq type='optional'>udftools</packagereq>
+      <packagereq type='optional'>unix2dos</packagereq>
+      <packagereq type='optional'>uuidd</packagereq>
+      <packagereq type='optional'>volume_key</packagereq>
+      <packagereq type='optional'>wodim</packagereq>
+      <packagereq type='optional'>x86info</packagereq>
+      <packagereq type='optional'>yum-plugin-aliases</packagereq>
+      <packagereq type='optional'>yum-plugin-changelog</packagereq>
+      <packagereq type='optional'>yum-plugin-downloadonly</packagereq>
+      <packagereq type='optional'>yum-plugin-tmprepo</packagereq>
+      <packagereq type='optional'>yum-plugin-verify</packagereq>
+      <packagereq type='optional'>yum-plugin-versionlock</packagereq>
+      <packagereq type='optional'>yum-presto</packagereq>
+      <packagereq type='optional'>zsh</packagereq>
+    </packagelist>
+  </group>
+  <group>
+    <id>basic-desktop</id>
+    <name>Desktop</name>
+    <name xml:lang='es'>Escritorio</name>
+    <description>A minimal desktop that can also be used as a thin client.</description>
+    <description xml:lang='es'>Un escritorio mínimo que puede ser utilizado como un cliente liviano.</description>
+    <default>false</default>
+    <uservisible>true</uservisible>
+    <packagelist>
+      <packagereq type='mandatory'>NetworkManager</packagereq>
+      <packagereq type='mandatory'>NetworkManager-gnome</packagereq>
+      <packagereq type='mandatory'>alsa-plugins-pulseaudio</packagereq>
+      <packagereq type='mandatory'>at-spi</packagereq>
+      <packagereq type='mandatory'>control-center</packagereq>
+      <packagereq type='mandatory'>dbus</packagereq>
+      <packagereq type='mandatory'>gdm</packagereq>
+      <packagereq type='mandatory'>gdm-user-switch-applet</packagereq>
+      <packagereq type='mandatory'>gnome-panel</packagereq>
+      <packagereq type='mandatory'>gnome-power-manager</packagereq>
+      <packagereq type='mandatory'>gnome-screensaver</packagereq>
+      <packagereq type='mandatory'>gnome-session</packagereq>
+      <packagereq type='mandatory'>gnome-terminal</packagereq>
+      <packagereq type='mandatory'>gvfs-archive</packagereq>
+      <packagereq type='mandatory'>gvfs-fuse</packagereq>
+      <packagereq type='mandatory'>gvfs-smb</packagereq>
+      <packagereq type='mandatory'>metacity</packagereq>
+      <packagereq type='mandatory'>nautilus</packagereq>
+      <packagereq type='mandatory'>notification-daemon</packagereq>
+      <packagereq type='mandatory'>polkit-gnome</packagereq>
+      <packagereq type='mandatory'>xdg-user-dirs-gtk</packagereq>
+      <packagereq type='mandatory'>yelp</packagereq>
+      <packagereq type='default'>control-center-extra</packagereq>
+      <packagereq type='default'>eog</packagereq>
+      <packagereq type='default'>gdm-plugin-fingerprint</packagereq>
+      <packagereq type='default'>gnome-applets</packagereq>
+      <packagereq type='default'>gnome-media</packagereq>
+      <packagereq type='default'>gnome-packagekit</packagereq>
+      <packagereq type='default'>gnome-vfs2-smb</packagereq>
+      <packagereq type='default'>gok</packagereq>
+      <packagereq type='default'>openssh-askpass</packagereq>
+      <packagereq type='default'>orca</packagereq>
+      <packagereq type='default'>pulseaudio-module-gconf</packagereq>
+      <packagereq type='default'>pulseaudio-module-x11</packagereq>
+      <packagereq type='default'>rhn-setup-gnome</packagereq>
+      <packagereq type='default'>subscription-manager-gui</packagereq>
+      <packagereq type='default'>vino</packagereq>
+      <packagereq type='optional'>sabayon-apply</packagereq>
+      <packagereq type='optional'>tigervnc-server</packagereq>
+      <packagereq type='optional'>xguest</packagereq>
+    </packagelist>
+  </group>
+  <group>
+    <id>compat-libraries</id>
+    <name>Compatibility libraries</name>
+    <name xml:lang='es'>Bibliotecas de compatibilidad</name>
+    <description>Compatibility libraries for applications built on previous versions of Red Hat Enterprise Linux.</description>
+    <description xml:lang='es'>Bibliotecas de compatibilidad para aplicaciones creadas en versiones anteriores de Red Hat Enterprise Linux.</description>
+    <default>false</default>
+    <uservisible>true</uservisible>
+    <packagelist>
+      <packagereq type='default'>compat-db</packagereq>
+      <packagereq type='default'>compat-expat1</packagereq>
+      <packagereq type='default'>compat-glibc</packagereq>
+      <packagereq type='default'>compat-libcap1</packagereq>
+      <packagereq type='default'>compat-libf2c-34</packagereq>
+      <packagereq type='default'>compat-libgfortran-41</packagereq>
+      <packagereq type='default'>compat-libstdc++-296</packagereq>
+      <packagereq type='default'>compat-libstdc++-33</packagereq>
+      <packagereq type='default'>compat-libtermcap</packagereq>
+      <packagereq type='default'>compat-openldap</packagereq>
+      <packagereq type='default'>compat-openmpi</packagereq>
+      <packagereq type='default'>compat-openmpi-psm</packagereq>
+      <packagereq type='default'>compat-opensm-libs</packagereq>
+      <packagereq type='default'>compat-readline5</packagereq>
+      <packagereq type='default'>openssl098e</packagereq>
+    </packagelist>
+  </group>
+  <group>
+    <id>core</id>
+    <name>Core</name>
+    <name xml:lang='es'>Núcleo</name>
+    <description>Smallest possible installation.</description>
+    <description xml:lang='es'>La instalación más pequeña posible.</description>
+    <default>true</default>
+    <uservisible>false</uservisible>
+    <packagelist>
+      <packagereq type='mandatory'>acl</packagereq>
+      <packagereq type='mandatory'>attr</packagereq>
+      <packagereq type='mandatory'>audit</packagereq>
+      <packagereq type='mandatory'>basesystem</packagereq>
+      <packagereq type='mandatory'>bash</packagereq>
+      <packagereq type='mandatory'>coreutils</packagereq>
+      <packagereq type='mandatory'>cpio</packagereq>
+      <packagereq type='mandatory'>cronie</packagereq>
+      <packagereq type='mandatory'>dhclient</packagereq>
+      <packagereq type='mandatory'>e2fsprogs</packagereq>
+      <packagereq type='mandatory'>filesystem</packagereq>
+      <packagereq type='mandatory'>glibc</packagereq>
+      <packagereq type='mandatory'>initscripts</packagereq>
+      <packagereq type='mandatory'>iproute</packagereq>
+      <packagereq type='mandatory'>iptables</packagereq>
+      <packagereq type='mandatory'>iptables-ipv6</packagereq>
+      <packagereq type='mandatory'>iputils</packagereq>
+      <packagereq type='mandatory'>kbd</packagereq>
+      <packagereq type='mandatory'>ncurses</packagereq>
+      <packagereq type='mandatory'>openssh-server</packagereq>
+      <packagereq type='mandatory'>passwd</packagereq>
+      <packagereq type='mandatory'>policycoreutils</packagereq>
+      <packagereq type='mandatory'>procps</packagereq>
+      <packagereq type='mandatory'>rhnsd</packagereq>
+      <packagereq type='mandatory'>rootfiles</packagereq>
+      <packagereq type='mandatory'>rpm</packagereq>
+      <packagereq type='mandatory'>rsyslog</packagereq>
+      <packagereq type='mandatory'>selinux-policy-targeted</packagereq>
+      <packagereq type='mandatory'>setup</packagereq>
+      <packagereq type='mandatory'>shadow-utils</packagereq>
+      <packagereq type='mandatory'>subscription-manager</packagereq>
+      <packagereq type='mandatory'>sudo</packagereq>
+      <packagereq type='mandatory'>util-linux-ng</packagereq>
+      <packagereq type='mandatory'>vim-minimal</packagereq>
+      <packagereq type='mandatory'>yum</packagereq>
+      <packagereq type='mandatory'>yum-rhn-plugin</packagereq>
+      <packagereq type='default'>aic94xx-firmware</packagereq>
+      <packagereq type='default'>atmel-firmware</packagereq>
+      <packagereq type='default'>b43-openfwwf</packagereq>
+      <packagereq type='default'>bfa-firmware</packagereq>
+      <packagereq type='default'>efibootmgr</packagereq>
+      <packagereq type='default'>grub</packagereq>
+      <packagereq type='default'>ipw2100-firmware</packagereq>
+      <packagereq type='default'>ipw2200-firmware</packagereq>
+      <packagereq type='default'>ivtv-firmware</packagereq>
+      <packagereq type='default'>iwl100-firmware</packagereq>
+      <packagereq type='default'>iwl1000-firmware</packagereq>
+      <packagereq type='default'>iwl3945-firmware</packagereq>
+      <packagereq type='default'>iwl4965-firmware</packagereq>
+      <packagereq type='default'>iwl5000-firmware</packagereq>
+      <packagereq type='default'>iwl5150-firmware</packagereq>
+      <packagereq type='default'>iwl6000-firmware</packagereq>
+      <packagereq type='default'>iwl6000g2a-firmware</packagereq>
+      <packagereq type='default'>iwl6050-firmware</packagereq>
+      <packagereq type='default'>kernel-firmware</packagereq>
+      <packagereq type='default'>libertas-usb8388-firmware</packagereq>
+      <packagereq type='default'>postfix</packagereq>
+      <packagereq type='default'>ql2100-firmware</packagereq>
+      <packagereq type='default'>ql2200-firmware</packagereq>
+      <packagereq type='default'>ql23xx-firmware</packagereq>
+      <packagereq type='default'>ql2400-firmware</packagereq>
+      <packagereq type='default'>ql2500-firmware</packagereq>
+      <packagereq type='default'>rt61pci-firmware</packagereq>
+      <packagereq type='default'>rt73usb-firmware</packagereq>
+      <packagereq type='default'>xorg-x11-drv-ati-firmware</packagereq>
+      <packagereq type='default'>zd1211-firmware</packagereq>
+      <packagereq type='optional'>dracut-fips</packagereq>
+      <packagereq type='optional'>dracut-network</packagereq>
+    </packagelist>
+  </group>
+  <group>
+    <id>development</id>
+    <name>Development tools</name>
+    <name xml:lang='es'>Herramientas de desarrollo</name>
+    <description>A basic development environment.</description>
+    <description xml:lang='es'>Un entorno de desarrollo básico.</description>
+    <default>false</default>
+    <uservisible>true</uservisible>
+    <packagelist>
+      <packagereq type='mandatory'>autoconf</packagereq>
+      <packagereq type='mandatory'>automake</packagereq>
+      <packagereq type='mandatory'>binutils</packagereq>
+      <packagereq type='mandatory'>bison</packagereq>
+      <packagereq type='mandatory'>flex</packagereq>
+      <packagereq type='mandatory'>gcc</packagereq>
+      <packagereq type='mandatory'>gcc-c++</packagereq>
+      <packagereq type='mandatory'>gettext</packagereq>
+      <packagereq type='mandatory'>libtool</packagereq>
+      <packagereq type='mandatory'>make</packagereq>
+      <packagereq type='mandatory'>patch</packagereq>
+      <packagereq type='mandatory'>pkgconfig</packagereq>
+      <packagereq type='mandatory'>redhat-rpm-config</packagereq>
+      <packagereq type='mandatory'>rpm-build</packagereq>
+      <packagereq type='default'>byacc</packagereq>
+      <packagereq type='default'>cscope</packagereq>
+      <packagereq type='default'>ctags</packagereq>
+      <packagereq type='default'>cvs</packagereq>
+      <packagereq type='default'>diffstat</packagereq>
+      <packagereq type='default'>doxygen</packagereq>
+      <packagereq type='default'>elfutils</packagereq>
+      <packagereq type='default'>gcc-gfortran</packagereq>
+      <packagereq type='default'>git</packagereq>
+      <packagereq type='default'>indent</packagereq>
+      <packagereq type='default'>intltool</packagereq>
+      <packagereq type='default'>patchutils</packagereq>
+      <packagereq type='default'>rcs</packagereq>
+      <packagereq type='default'>subversion</packagereq>
+      <packagereq type='default'>swig</packagereq>
+      <packagereq type='default'>systemtap</packagereq>
+      <packagereq type='optional'>ElectricFence</packagereq>
+      <packagereq type='optional'>ant</packagereq>
+      <packagereq type='optional'>babel</packagereq>
+      <packagereq type='optional'>bzr</packagereq>
+      <packagereq type='optional'>chrpath</packagereq>
+      <packagereq type='optional'>cmake</packagereq>
+      <packagereq type='optional'>compat-gcc-34</packagereq>
+      <packagereq type='optional'>compat-gcc-34-c++</packagereq>
+      <packagereq type='optional'>compat-gcc-34-g77</packagereq>
+      <packagereq type='optional'>cvs-inetd</packagereq>
+      <packagereq type='optional'>dejagnu</packagereq>
+      <packagereq type='optional'>expect</packagereq>
+      <packagereq type='optional'>gcc-gnat</packagereq>
+      <packagereq type='optional'>gcc-java</packagereq>
+      <packagereq type='optional'>gcc-objc</packagereq>
+      <packagereq type='optional'>gcc-objc++</packagereq>
+      <packagereq type='optional'>imake</packagereq>
+      <packagereq type='optional'>jpackage-utils</packagereq>
+      <packagereq type='optional'>kdewebdev</packagereq>
+      <packagereq type='optional'>ksc</packagereq>
+      <packagereq type='optional'>libstdc++-docs</packagereq>
+      <packagereq type='optional'>mercurial</packagereq>
+      <packagereq type='optional'>mod_dav_svn</packagereq>
+      <packagereq type='optional'>nasm</packagereq>
+      <packagereq type='optional'>perltidy</packagereq>
+      <packagereq type='optional'>python-docs</packagereq>
+      <packagereq type='optional'>rpmdevtools</packagereq>
+      <packagereq type='optional'>rpmlint</packagereq>
+      <packagereq type='optional'>systemtap-sdt-devel</packagereq>
+      <packagereq type='optional'>systemtap-server</packagereq>
+    </packagelist>
+  </group>
+  <group>
+    <id>legacy-x</id>
+    <name>Legacy X Window System compatibility</name>
+    <name xml:lang='es'>Compatibilidad con legado de X</name>
+    <description>Compatibility programs for migration from or working with legacy X Window System environments.</description>
+    <description xml:lang='es'>Programas de compatibilidad para migrar desde o funcionar con sistema de entornos X.</description>
+    <default>false</default>
+    <uservisible>true</uservisible>
+    <packagelist>
+      <packagereq type='default'>xorg-x11-fonts-100dpi</packagereq>
+      <packagereq type='default'>xorg-x11-fonts-ISO8859-1-100dpi</packagereq>
+      <packagereq type='default'>xorg-x11-fonts-Type1</packagereq>
+      <packagereq type='default'>xorg-x11-fonts-misc</packagereq>
+      <packagereq type='optional'>libXmu</packagereq>
+      <packagereq type='optional'>libXp</packagereq>
+      <packagereq type='optional'>openmotif</packagereq>
+      <packagereq type='optional'>openmotif22</packagereq>
+      <packagereq type='optional'>xorg-x11-fonts-75dpi</packagereq>
+      <packagereq type='optional'>xorg-x11-fonts-ISO8859-1-75dpi</packagereq>
+      <packagereq type='optional'>xorg-x11-fonts-ISO8859-14-100dpi</packagereq>
+      <packagereq type='optional'>xorg-x11-fonts-ISO8859-14-75dpi</packagereq>
+      <packagereq type='optional'>xorg-x11-fonts-ISO8859-15-75dpi</packagereq>
+      <packagereq type='optional'>xorg-x11-fonts-ISO8859-2-100dpi</packagereq>
+      <packagereq type='optional'>xorg-x11-fonts-ISO8859-2-75dpi</packagereq>
+      <packagereq type='optional'>xorg-x11-fonts-ISO8859-9-100dpi</packagereq>
+      <packagereq type='optional'>xorg-x11-fonts-ISO8859-9-75dpi</packagereq>
+      <packagereq type='optional'>xorg-x11-fonts-cyrillic</packagereq>
+      <packagereq type='optional'>xorg-x11-fonts-ethiopic</packagereq>
+      <packagereq type='optional'>xorg-x11-twm</packagereq>
+      <packagereq type='optional'>xorg-x11-xdm</packagereq>
+      <packagereq type='optional'>xterm</packagereq>
+    </packagelist>
+  </group>
+  <group>
+    <id>spanish-support</id>
+    <name>Spanish Support</name>
+    <name xml:lang='es'>Soporte para español</name>
+    <description/>
+    <default>false</default>
+    <uservisible>true</uservisible>
+    <langonly>es</langonly>
+    <packagelist>
+      <packagereq type='default'>Red_Hat_Enterprise_Linux-Release_Notes-6-es-ES</packagereq>
+      <packagereq requires='eclipse-platform' type='conditional'>eclipse-nls-es</packagereq>
+      <packagereq requires='hunspell' type='conditional'>hunspell-es</packagereq>
+      <packagereq requires='kdelibs3' type='conditional'>kde-i18n-Spanish</packagereq>
+      <packagereq requires='kdelibs' type='conditional'>kde-l10n-Spanish</packagereq>
+      <packagereq requires='man-pages' type='conditional'>man-pages-es</packagereq>
+      <packagereq requires='man-pages' type='conditional'>man-pages-es-extra</packagereq>
+    </packagelist>
+  </group>
+  <group>
+    <id>x11</id>
+    <name>X Window System</name>
+    <name xml:lang='es'>Sistema X Window</name>
+    <description>X Window System Support.</description>
+    <description xml:lang='es'>Soporte para sistema X Window.</description>
+    <default>false</default>
+    <uservisible>true</uservisible>
+    <packagelist>
+      <packagereq type='mandatory'>xorg-x11-drivers</packagereq>
+      <packagereq type='mandatory'>xorg-x11-server-Xorg</packagereq>
+      <packagereq type='mandatory'>xorg-x11-xauth</packagereq>
+      <packagereq type='mandatory'>xorg-x11-xinit</packagereq>
+      <packagereq type='default'>firstboot</packagereq>
+      <packagereq type='default'>glx-utils</packagereq>
+      <packagereq type='default'>hal</packagereq>
+      <packagereq type='default'>plymouth-system-theme</packagereq>
+      <packagereq type='default'>spice-vdagent</packagereq>
+      <packagereq type='default'>subscription-manager-firstboot</packagereq>
+      <packagereq type='default'>wacomexpresskeys</packagereq>
+      <packagereq type='default'>wdaemon</packagereq>
+      <packagereq type='default'>xorg-x11-server-utils</packagereq>
+      <packagereq type='default'>xorg-x11-utils</packagereq>
+      <packagereq type='default'>xvattr</packagereq>
+    </packagelist>
+  </group>
+  <!-- <category> -->
+  <!--   <id>base-system</id> -->
+  <!--   <name>Base System</name> -->
+  <!--   <name xml:lang='es'>Sistema Base</name> -->
+  <!--   <description>Core system components.</description> -->
+  <!--   <description xml:lang='es'>Componentes de sistema Core</description> -->
+  <!--   <display_order>10</display_order> -->
+  <!--   <grouplist> -->
+  <!--     <groupid>base</groupid> -->
+  <!--     <groupid>compat-libraries</groupid> -->
+  <!--   </grouplist> -->
+  <!-- </category> -->
+  <!-- <category> -->
+  <!--   <id>desktops</id> -->
+  <!--   <name>Desktops</name> -->
+  <!--   <name xml:lang='es'>Escritorios</name> -->
+  <!--   <description>Desktops and thin clients.</description> -->
+  <!--   <description xml:lang='es'>Escritorios y clientes livianos.</description> -->
+  <!--   <display_order>70</display_order> -->
+  <!--   <grouplist> -->
+  <!--     <groupid>basic-desktop</groupid> -->
+  <!--     <groupid>legacy-x</groupid> -->
+  <!--     <groupid>x11</groupid> -->
+  <!--   </grouplist> -->
+  <!-- </category> -->
+  <!-- <category> -->
+  <!--   <id>development</id> -->
+  <!--   <name>Development</name> -->
+  <!--   <name xml:lang='es'>Desarrollo</name> -->
+  <!--   <description>Development tools and libraries.</description> -->
+  <!--   <description xml:lang='es'>Herramientas de desarrollo y bibliotecas.</description> -->
+  <!--   <display_order>90</display_order> -->
+  <!--   <grouplist> -->
+  <!--     <groupid>development</groupid> -->
+  <!--   </grouplist> -->
+  <!-- </category> -->
+  <!-- <category> -->
+  <!--   <id>language-support</id> -->
+  <!--   <name>Languages</name> -->
+  <!--   <name xml:lang='es'>Idiomas</name> -->
+  <!--   <description>These packages provide support for various locales including fonts and input methods.</description> -->
+  <!--   <description xml:lang='es'>Estos paquetes proporcionan soporte para diversos idiomas, incluyendo tipografías y métodos de escritura.</description> -->
+  <!--   <display_order>1024</display_order> -->
+  <!--   <grouplist> -->
+  <!--     <groupid>spanish-support</groupid> -->
+  <!--   </grouplist> -->
+  <!-- </category> -->
+</comps>

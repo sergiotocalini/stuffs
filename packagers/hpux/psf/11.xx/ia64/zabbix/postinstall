@@ -1,0 +1,60 @@
+#!/bin/sh
+mkdir /etc/zabbix
+cat >/etc/zabbix/zabbix_agentd.conf<<EOF
+LogFile=/tmp/zabbix_agentd.log
+PidFile=/tmp/zabbix_agentd.pid
+Server=127.0.0.1
+Hostname=`uname -n`
+Include=/etc/zabbix/agent.d/
+EOF
+
+cat >/etc/zabbix/zabbix_agent.conf<<EOF
+LogFile=/tmp/zabbix_agentd.log
+PidFile=/tmp/zabbix_agentd.pid
+Server=127.0.0.1
+Hostname=`uname -n`
+Include=/etc/zabbix/agent.d/
+EOF
+
+cat >/sbin/init.d/zabbix_agentd<<EOF
+#!/sbin/sh
+
+CONFIG=/etc/zabbix/zabbix_agentd.conf
+DAEMON=/usr/contrib/sbin/zabbix_agentd
+
+agent_start() {
+   if [ -f "\${CONFIG}" -a -f "\${DAEMON}" ]; then
+      echo 'Starting zabbix_agentd.'
+      \${DAEMON} -c \${CONFIG}
+   fi
+}
+
+agent_stop() {
+   echo 'Stopping zabbix_agentd.'
+   pkill -TERM -x zabbix_agentd
+}
+
+case "\$1" in
+   'start')
+      agent_start
+   ;;
+   'stop')
+      agent_stop
+   ;;
+   'restart')
+      \$0 agent_stop
+      sleep 5
+      \$0 agent_start
+   ;;
+   *)
+      echo "Usage: \$0 { start | stop }"
+      exit 1
+   ;;
+esac
+EOF
+
+chown root:sys /sbin/init.d/zabbix_agentd
+chmod 755 /sbin/init.d/zabbix_agentd
+ln -s /sbin/init.d/zabbix_agentd /sbin/rc3.d/S900zabbix_agentd
+chown root:sys /sbin/rc3.d/S900zabbix_agentd
+chmod 755 /sbin/rc3.d/S900zabbix_agentd

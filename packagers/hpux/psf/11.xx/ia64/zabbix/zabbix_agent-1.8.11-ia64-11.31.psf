@@ -1,0 +1,55 @@
+# PSF file for /usr/contrib
+#
+#
+# Useful Commands:
+#
+# swpackage -p -v -s /opt/soft/build/zabbix_agent/pkgsrc/zabbix.psf -d /tmp/zabbix.depot
+# swinstall -p -v -s /tmp/zabbix.depot ZabbixAgent
+# swremove ZabbixAgent
+#
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+depot
+	layout_version	1.0
+
+vendor
+	tag "CorporacionAmerica"
+	title "Corporacion America"
+	description "Zabbix Monitoring Tool"
+
+category
+	tag "package_tool"
+	description "packags source code to different OS platform"
+
+product
+	tag "Zabbix"
+	category "package_tool"
+	title "Zabbix"
+	description "Zabbix Monitoring Tool"
+	revision 1.8.11
+	architecture HP-UX_B.11.23_32/64
+	machine_type *
+	is_patch false
+	is_locatable false
+	os_name HP-UX
+	os_release ?.11.*
+	os_version *
+	vendor_tag "CorporacionAmerica"
+	directory /usr/contrib
+
+fileset
+	tag "Agent"
+	title "ZabbixAgent"
+	preinstall ./preinstall
+	preremove ./preremove
+	postinstall ./postinstall
+	postremove ./postremove
+	directory /opt/soft/build/zabbix_agent/1.8.11/install_dir/bin=/usr/contrib/bin
+	file_permissions -m 755 -o zabbix -g zabbix
+	file *
+	directory /opt/soft/build/zabbix_agent/1.8.11/install_dir/sbin=/usr/contrib/sbin
+	file_permissions -m 755 -o zabbix -g zabbix
+	file *
+	directory /opt/soft/build/zabbix_agent/1.8.11/install_dir/share/man=/usr/contrib/man
+	file_permissions -m 744 -o zabbix -g zabbix
+	file *

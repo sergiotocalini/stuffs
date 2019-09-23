@@ -1,0 +1,25 @@
+#!/bin/sh
+
+srv_list=""
+while : ; do
+   echo "Enter a zabbix server ip address [no more]: \c"
+   read server
+   echo ${server} | /usr/xpg4/bin/grep -q -E '^([0-9]{1,3}\.){3}[0-9]{1,3}$'
+   ip=$?
+
+   if [ -z "${server}" ]; then
+     break
+   fi
+
+   if [ `expr "${server}" : ".* "` -ne 0 ]; then
+     echo "Please enter one address at a time."
+   elif [ $ip -ne 0 ]; then
+     echo "This is not an IP address."
+   else
+        srv_list="${srv_list} ${server}"
+   fi
+done
+
+cat >$1 <<!
+ZABBIX_SERVERS=`echo ${srv_list} | cut -c 1- | sed 's/ /,/g'`
+exit 0

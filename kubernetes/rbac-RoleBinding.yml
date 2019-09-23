@@ -1,0 +1,18 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: acgrbac
+  namespace: acg
+subjects:
+- kind: User
+  name: mia
+  apiGroup: ""
+- kind: Group
+  name: ops
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: acgrbac
+  apiGroup: ""
+
+

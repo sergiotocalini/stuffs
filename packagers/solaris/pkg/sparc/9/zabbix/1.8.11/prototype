@@ -1,0 +1,20 @@
+i pkginfo
+i preinstall
+i postinstall
+i preremove
+i postremove
+i request
+d none /usr/local 0755 root root
+d none /usr/local/sbin 0755 root root
+f none /usr/local/sbin/zabbix_agent=/opt/soft/build/zabbix_agent-1.8.11/sbin/zabbix_agent 0755 root root
+f none /usr/local/sbin/zabbix_agentd=/opt/soft/build/zabbix_agent-1.8.11/sbin/zabbix_agentd 0755 root root
+d none /usr/local/bin 0755 root root
+f none /usr/local/bin/zabbix_get=/opt/soft/build/zabbix_agent-1.8.11/bin/zabbix_get 0755 root root
+f none /usr/local/bin/zabbix_sender=/opt/soft/build/zabbix_agent-1.8.11/bin/zabbix_sender 0755 root root
+d none /usr/local/share 0755 root root
+d none /usr/local/share/man 0755 root root
+d none /usr/local/share/man/man1 0755 root root
+f none /usr/local/share/man/man1/zabbix_get.1=/opt/soft/build/zabbix_agent-1.8.11/share/man/man1/zabbix_get.1 0644 root root
+f none /usr/local/share/man/man1/zabbix_sender.1=/opt/soft/build/zabbix_agent-1.8.11/share/man/man1/zabbix_sender.1 0644 root root
+d none /usr/local/share/man/man8 0755 root root
+f none /usr/local/share/man/man8/zabbix_agentd.8=/opt/soft/build/zabbix_agent-1.8.11/share/man/man8/zabbix_agentd.8 0644 root root

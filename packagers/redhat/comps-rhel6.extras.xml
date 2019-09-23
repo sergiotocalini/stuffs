@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE comps PUBLIC "-//Red Hat, Inc.//DTD Comps info//EN" "comps.dtd">
+<comps>
+  <group>
+    <id>ca-base</id>
+    <name>CA - Base</name>
+    <name xml:lang='es'>Paquetes basicos de Corporacion America</name>
+    <description>Basic packages of Corporacion America.</description>
+    <description xml:lang='es'>Paquetes basicos de Corporacion America.</description>
+    <default>false</default>
+    <uservisible>true</uservisible>
+    <packagelist>
+      <packagereq type='mandatory'>bind-utils</packagereq>
+      <packagereq type='mandatory'>cifs-utils</packagereq>
+      <packagereq type='mandatory'>curl</packagereq>
+      <packagereq type='mandatory'>cyrus-sasl-devel</packagereq>
+      <packagereq type='mandatory'>cyrus-sasl-lib</packagereq>
+      <packagereq type='mandatory'>cyrus-sasl-md5</packagereq>
+      <packagereq type='mandatory'>cyrus-sasl-ntlm</packagereq>
+      <packagereq type='mandatory'>cyrus-sasl-plain</packagereq>
+      <packagereq type='mandatory'>cyrus-sasl</packagereq>
+      <packagereq type='mandatory'>dfc</packagereq>
+      <packagereq type='mandatory'>dmidecode</packagereq>
+      <packagereq type='mandatory'>ksh</packagereq>
+      <packagereq type='mandatory'>linux_logo</packagereq>
+      <packagereq type='mandatory'>mutt</packagereq>
+      <packagereq type='mandatory'>nfs-utils</packagereq>
+      <packagereq type='mandatory'>nscd</packagereq>
+      <packagereq type='mandatory'>ntp</packagereq>
+      <packagereq type='mandatory'>openldap-clients</packagereq>
+      <packagereq type='mandatory'>openssh-clients</packagereq>
+      <packagereq type='mandatory'>python-markupsafe</packagereq>
+      <packagereq type='mandatory'>redhat-lsb</packagereq>
+      <packagereq type='mandatory'>rsync</packagereq>
+      <packagereq type='mandatory'>salt-minion</packagereq>
+      <packagereq type='mandatory'>sssd</packagereq>
+      <packagereq type='mandatory'>subversion</packagereq>
+      <packagereq type='mandatory'>sudo</packagereq>
+      <packagereq type='mandatory'>telnet</packagereq>
+      <packagereq type='mandatory'>traceroute</packagereq>
+      <packagereq type='mandatory'>tree</packagereq>
+      <packagereq type='mandatory'>unzip</packagereq>
+      <packagereq type='mandatory'>vim</packagereq>
+      <packagereq type='mandatory'>w3m</packagereq>
+      <packagereq type='mandatory'>wget</packagereq>
+      <packagereq type='mandatory'>yum-plugin-versionlock</packagereq>
+      <packagereq type='mandatory'>yum-utils</packagereq>
+      <packagereq type='mandatory'>zabbix-agent</packagereq>
+      <packagereq type='mandatory'>zip</packagereq>
+    </packagelist>
+  </group>
+  <group>
+    <id>ca-desktop_minimal</id>
+    <name>CA - Desktop Minimal</name>
+    <name xml:lang='es'>Entorno Grafico Minimo</name>
+    <description>Minimal desktop packages.</description>
+    <description xml:lang='es'>Paquetes para un entorno grafico minimo.</description>
+    <default>false</default>
+    <uservisible>true</uservisible>
+    <packagelist>
+      <packagereq type='mandatory'>Terminal</packagereq>
+      <packagereq type='mandatory'>Thunar</packagereq>
+      <packagereq type='mandatory'>gdm</packagereq>
+      <packagereq type='mandatory'>xfce-utils</packagereq>
+      <packagereq type='mandatory'>xfce4-panel</packagereq>
+      <packagereq type='mandatory'>xfce4-session</packagereq>
+      <packagereq type='mandatory'>xfce4-settings</packagereq>
+      <packagereq type='mandatory'>xfconf</packagereq>
+      <packagereq type='mandatory'>xfdesktop</packagereq>
+      <packagereq type='mandatory'>xfwm4</packagereq>
+      <packagereq type='mandatory'>xorg-x11-fonts-Type1</packagereq>
+      <packagereq type='mandatory'>xorg-x11-fonts-misc</packagereq>
+    </packagelist>
+  </group>
+  <group>
+    <id>ca-drbd</id>
+    <name>CA - DRBD</name>
+    <name xml:lang='es'>Paquetes para DRBD de Corporacion America</name>
+    <description>DRBD packages of Corporacion America.</description>
+    <description xml:lang='es'>Paquetes para DRBD de Corporacion America.</description>
+    <default>false</default>
+    <uservisible>true</uservisible>
+    <packagelist>
+      <packagereq type='mandatory'>drbd-pacemaker</packagereq>
+      <packagereq type='mandatory'>drbd-utils</packagereq>
+    </packagelist>
+  </group>
+  <group>
+    <id>ca-oracle</id>
+    <name>CA - Oracle</name>
+    <name xml:lang='es'>Paquetes para Oracle de Corporacion America</name>
+    <description>Oracle packages of Corporacion America.</description>
+    <description xml:lang='es'>Paquetes para Oracle de Corporacion America.</description>
+    <default>false</default>
+    <uservisible>true</uservisible>
+    <packagelist>
+      <packagereq type='mandatory'>binutils</packagereq>
+      <packagereq type='mandatory'>compat-libcap1</packagereq>
+      <packagereq type='mandatory'>compat-libstdc++-33</packagereq>
+      <packagereq type='mandatory'>gcc-c++</packagereq>
+      <packagereq type='mandatory'>gcc</packagereq>
+      <packagereq type='mandatory'>glibc-devel</packagereq>
+      <packagereq type='mandatory'>glibc</packagereq>
+      <packagereq type='mandatory'>ksh</packagereq>
+      <packagereq type='mandatory'>libaio-devel</packagereq>
+      <packagereq type='mandatory'>libaio</packagereq>
+      <packagereq type='mandatory'>libgcc</packagereq>
+      <packagereq type='mandatory'>libstdc++-devel</packagereq>
+      <packagereq type='mandatory'>libstdc++</packagereq>
+      <packagereq type='mandatory'>make</packagereq>
+      <packagereq type='mandatory'>ncompress</packagereq>
+      <packagereq type='mandatory'>sysstat</packagereq>
+      <packagereq type='mandatory'>unixODBC-devel</packagereq>
+      <packagereq type='mandatory'>unixODBC</packagereq>
+      <packagereq type='mandatory'>xorg-x11-xauth</packagereq>
+    </packagelist>
+  </group>
+  <group>
+    <id>ca-pacemaker</id>
+    <name>CA - Pacemaker</name>
+    <name xml:lang='es'>Paquetes para Pacemaker de Corporacion America</name>
+    <description>Pacemaker packages of Corporacion America.</description>
+    <description xml:lang='es'>Paquetes para Pacemaker de Corporacion America.</description>
+    <default>false</default>
+    <uservisible>true</uservisible>
+    <packagelist>
+      <packagereq type='mandatory'>ccs</packagereq>
+      <packagereq type='mandatory'>cman</packagereq>
+      <packagereq type='mandatory'>iptables-devel</packagereq>
+      <packagereq type='mandatory'>iptables</packagereq>
+      <packagereq type='mandatory'>pacemaker-cli</packagereq>
+      <packagereq type='mandatory'>pacemaker-cluster-libs</packagereq>
+      <packagereq type='mandatory'>pacemaker-cts</packagereq>
+      <packagereq type='mandatory'>pacemaker-libs-devel</packagereq>
+      <packagereq type='mandatory'>pacemaker-libs</packagereq>
+      <packagereq type='mandatory'>pacemaker</packagereq>
+      <packagereq type='mandatory'>pcs</packagereq>
+      <packagereq type='mandatory'>resource-agents-corpam</packagereq>
+    </packagelist>
+  </group>
+  <group>
+    <id>ca-weblogic</id>
+    <name>CA - Weblogic</name>
+    <name xml:lang='es'>Paquetes para Weblogic de Corporacion America</name>
+    <description>Weblogic packages of Corporacion America.</description>
+    <description xml:lang='es'>Paquetes para Weblogic de Corporacion America.</description>
+    <default>false</default>
+    <uservisible>true</uservisible>
+    <packagelist>
+      <packagereq type='mandatory'>binutils</packagereq>
+      <packagereq type='mandatory'>compat-libcap</packagereq>
+      <packagereq type='mandatory'>compat-libstdc++-33</packagereq>
+      <packagereq type='mandatory'>elfutils-libelf</packagereq>
+      <packagereq type='mandatory'>elfutils-libelf-devel</packagereq>
+      <packagereq type='mandatory'>gcc</packagereq>
+      <packagereq type='mandatory'>gcc-c++</packagereq>
+      <packagereq type='mandatory'>glibc</packagereq>
+      <packagereq type='mandatory'>glibc-common</packagereq>
+      <packagereq type='mandatory'>glibc-devel</packagereq>
+      <packagereq type='mandatory'>glibc-headers</packagereq>
+      <packagereq type='mandatory'>ksh</packagereq>
+      <packagereq type='mandatory'>libaio</packagereq>
+      <packagereq type='mandatory'>libaio-devel</packagereq>
+      <packagereq type='mandatory'>libgcc</packagereq>
+      <packagereq type='mandatory'>libstdc++</packagereq>
+      <packagereq type='mandatory'>libstdc++-devel</packagereq>
+      <packagereq type='mandatory'>libXext</packagereq>
+      <packagereq type='mandatory'>libXtst</packagereq>
+      <packagereq type='mandatory'>make</packagereq>
+      <packagereq type='mandatory'>nss-softokn-freebl</packagereq>
+      <packagereq type='mandatory'>numactl-devel</packagereq>
+      <packagereq type='mandatory'>openmotif</packagereq>
+      <packagereq type='mandatory'>openmotif22</packagereq>
+      <packagereq type='mandatory'>sysstat</packagereq>
+    </packagelist>
+  </group>
+  <group>
+    <id>ca-web</id>
+    <name>CA - Web</name>
+    <name xml:lang='es'>Paquetes para servidor Web de Corporacion America</name>
+    <description>Web packages of Corporacion America.</description>
+    <description xml:lang='es'>Paquetes para servidor Web de Corporacion America.</description>
+    <default>false</default>
+    <uservisible>true</uservisible>
+    <packagelist>
+      <packagereq type='mandatory'>haproxy</packagereq>
+      <packagereq type='mandatory'>httpd</packagereq>
+      <packagereq type='mandatory'>mod_ssl</packagereq>
+      <packagereq type='mandatory'>php-bcmath</packagereq>
+      <packagereq type='mandatory'>php-cli</packagereq>
+      <packagereq type='mandatory'>php-common</packagereq>
+      <packagereq type='mandatory'>php-dba</packagereq>
+      <packagereq type='mandatory'>php-gd</packagereq>
+      <packagereq type='mandatory'>php-imap</packagereq>
+      <packagereq type='mandatory'>php-intl</packagereq>
+      <packagereq type='mandatory'>php-ldap</packagereq>
+      <packagereq type='mandatory'>php-mbstring</packagereq>
+      <packagereq type='mandatory'>php-mcrypt</packagereq>
+      <packagereq type='mandatory'>php-mysql</packagereq>
+      <packagereq type='mandatory'>php-odbc</packagereq>
+      <packagereq type='mandatory'>php-pdo</packagereq>
+      <packagereq type='mandatory'>php-pgsql</packagereq>
+      <packagereq type='mandatory'>php-process</packagereq>
+      <packagereq type='mandatory'>php-pspell</packagereq>
+      <packagereq type='mandatory'>php-snmp</packagereq>
+      <packagereq type='mandatory'>php-soap</packagereq>
+      <packagereq type='mandatory'>php-xml</packagereq>
+      <packagereq type='mandatory'>php-xmlrpc</packagereq>
+      <packagereq type='mandatory'>php</packagereq>
+    </packagelist>
+  </group>
+</comps>

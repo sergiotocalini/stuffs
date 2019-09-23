@@ -1,0 +1,59 @@
+kubectl get nodes
+kubectl apply -f yaml.yml
+kubectl apply -f yaml.yml --record=true
+kubectl get deploy
+kubectl get deploy --watch
+kubectl get pods -o wide
+kubectl get nodes -o jsonpath='{.items[*].spec.podCIDR}'
+kubectl exec -it <container> bash
+	apt update
+	apt install iputils-ping curl dnsutils iproute2 -y
+	ping 10.1.0.5
+	ping 10.1.0.6
+kubectl get svc
+kubectl get svc --watch
+kubectl describe svc
+kubectl get pv
+kubectl get pvc
+kubectl get sc
+kubectl get rs -o wide
+kubectl describe sc hostpath
+kubectl describe deploy <deployname>
+kubectl version -o yaml
+kubectl rollout status deploy <deployname>
+kubectl rollout history deploy <deployname>
+kubectl rollout undo deploy <deployname>
+kubectl get hpa --namespace <namespace>
+kubectl config current-context
+kubectl config get-credentials
+kubectl get clusterrolebindings
+kubectl get clusterroles
+---
+gcloud container clusters get-credentials acg-autoscale --zone europe-west2-b --project acg10206211
+---
+openssl genrsa -out mia.key 2048
+openssl req -new -key mia.key -out mia.csr -subj "/CN=mia/O=acg"
+openssl x509 -req -in mia.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out mia.crt -days 365
+kubectl config set-credentials mia --client-certificate=mia.crt --client-key=mia.key
+kubectl config set-context mia --cluster=acg.k8s.local --namespace=acg --user=mia
+kubectl config use-context mia
+---
+gsutil mv -p gs://storage-lab-console/test/200202....jpg gs://storage-lab-console/pepe.jpg
+gsutil ls
+---
+gcloud config list
+gcloud projects list
+gcloud config set core/account <account>
+gcloud config set project <name>
+gcloud config set compute/zone us-west2-b
+gcloud config set compute/region us-west2
+gcloud compute instances list
+gcloud compute instances create vm01
+gcloud compute machine-types list
+gcloud topic filters
+gcloud compute machine-types list --filter="NAME:f1-micro"
+gcloud compute machine-types list --filter="NAME:f1-micro AND ZONE~us-west"
+gcloud compute instances create myhappyvm --machine-type=f1-micro
+gcloud compute ssh myhappyvm
+gcloud compute instances delete myhappyvm
+---

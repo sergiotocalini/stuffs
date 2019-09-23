@@ -1,0 +1,2 @@
+grep zabbix /etc/group > /dev/null 2>&1 || groupadd zabbix
+id zabbix > /dev/null 2>&1 || useradd -s /bin/bash -d /etc/zabbix -c "Zabbix Monitoring" -g zabbix zabbix

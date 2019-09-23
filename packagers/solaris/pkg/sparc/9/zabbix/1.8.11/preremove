@@ -1,0 +1,2 @@
+/etc/init.d/zabbix_agentd stop
+unlink /etc/rc3.d/S99zabbix_agentd

@@ -1,0 +1,1 @@
+/sbin/init.d/zabbix_agentd stop

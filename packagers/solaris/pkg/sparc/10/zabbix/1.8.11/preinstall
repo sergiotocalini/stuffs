@@ -1,0 +1,3 @@
+crle -u -l /usr/local/lib
+grep zabbix /etc/group > /dev/null 2>&1 || groupadd zabbix
+id zabbix > /dev/null 2>&1 || useradd -s /bin/false -c "Zabbix Monitoring" -g zabbix zabbix

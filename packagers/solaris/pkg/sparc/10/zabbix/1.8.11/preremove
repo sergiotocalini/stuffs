@@ -1,0 +1,2 @@
+svcadm disable -s zabbix-agent
+svccfg delete zabbix-agent

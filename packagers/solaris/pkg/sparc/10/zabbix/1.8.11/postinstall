@@ -1,0 +1,47 @@
+#!/bin/sh
+mkdir /etc/zabbix
+mkdir /etc/zabbix/agent.d
+mkdir /etc/zabbix/scripts
+cat >/etc/zabbix/zabbix_agentd.conf<<EOF
+LogFile=/tmp/zabbix_agentd.log
+PidFile=/tmp/zabbix_agentd.pid
+Server=${ZABBIX_SERVERS}
+Hostname=`uname -n`
+Include=/etc/zabbix/agent.d/
+EOF
+
+cat >/etc/zabbix/zabbix_agent.conf<<EOF
+LogFile=/tmp/zabbix_agentd.log
+PidFile=/tmp/zabbix_agentd.pid
+Server=${ZABBIX_SERVERS}
+Hostname=`uname -n`
+Include=/etc/zabbix/agent.d/
+EOF
+
+
+cat >/tmp/zabbix-agent.xml<<EOF
+<?xml version="1.0"?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+
+<service_bundle type="manifest" name="zabbix-agent">
+        <service name="application/zabbix-agent" type="service" version="5">
+                <create_default_instance enabled="false"/>
+                <single_instance/>
+                <dependency name="fs-local" grouping="require_all" restart_on="none" type="service">
+                        <service_fmri value="svc:/system/filesystem/local"/>
+                </dependency>
+                <exec_method type="method" name="start" exec="/usr/local/sbin/zabbix_agentd" timeout_seconds="60"/>
+                <exec_method type="method" name="stop" exec=":kill" timeout_seconds="60"/>
+                <stability value="Unstable"/>
+                <template>
+                  <common_name>
+                        <loctext xml:lang="C">Zabbix Agent</loctext>
+                  </common_name>
+                </template>
+        </service>
+</service_bundle>
+EOF
+
+svccfg import /tmp/zabbix-agent.xml
+svcadm enable zabbix-agent
+rm /tmp/zabbix-agent.xml

@@ -1,0 +1,61 @@
+#!/bin/sh
+mkdir /etc/zabbix
+mkdir /etc/zabbix/agent.d
+mkdir /etc/zabbix/scripts
+cat >/etc/zabbix/zabbix_agentd.conf<<EOF
+LogFile=/tmp/zabbix_agentd.log
+PidFile=/tmp/zabbix_agentd.pid
+Server=${ZABBIX_SERVERS}
+Hostname=`uname -n`
+Include=/etc/zabbix/agent.d/
+EOF
+
+cat >/etc/zabbix/zabbix_agent.conf<<EOF
+LogFile=/tmp/zabbix_agentd.log
+PidFile=/tmp/zabbix_agentd.pid
+Server=${ZABBIX_SERVERS}
+Hostname=`uname -n`
+Include=/etc/zabbix/agent.d/
+EOF
+
+
+cat >/etc/init.d/zabbix_agentd<<EOF
+#!/bin/sh
+
+CONFIG=/etc/zabbix/zabbix_agentd.conf
+DAEMON=/usr/local/sbin/zabbix_agentd
+
+start() {
+   if [ -f "\${CONFIG}" -a -f "\${DAEMON}" ]; then
+      echo 'Starting zabbix_agentd.'
+      \${DAEMON}
+   fi
+}
+
+stop() {
+   echo 'Stopping zabbix_agentd.'
+   pkill -TERM -x zabbix_agentd
+}
+
+case "\$1" in
+   start)
+      start
+   ;;
+   stop)
+      stop
+   ;;
+   restart)
+      $0 stop
+      sleep 5
+      $0 start
+   *)
+      echo "Usage: \$0 { start | stop | restart }"
+      exit 1
+   ;;
+esac
+EOF
+
+chown root:sys /etc/init.d/zabbix_agentd
+chmod 744 /etc/init.d/zabbix_agentd
+ln -s /etc/init.d/zabbix_agentd /etc/rc3.d/S99zabbix_agentd
+chown root:sys /etc/rc3.d/S99zabbix_agentd
