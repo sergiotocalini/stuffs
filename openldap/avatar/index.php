@@ -4,11 +4,9 @@
  header("Expires: ".gmdate("D, d M Y H:i:s", time() + 604800)." GMT");
  header("Content-Type: image/jpg");
 
- $img = 
+ $img = 'default.jpg';
  if(file_exists($_GET["img"])) {
     $filename = $_GET["img"];
- } else {
-    $filename = 'default.jpg';
  }
 
  $imagick = new Imagick($filename);
