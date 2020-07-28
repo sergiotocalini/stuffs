@@ -1,0 +1,19 @@
+dn: uid={{userid}},ou=People,dc=corpam,dc=com,dc=ar
+changetype: modify
+add: ObjectClass
+objectClass: shadowAccount
+-
+add: ObjectClass
+objectClass: posixAccount
+-
+add: uidNumber
+uidNumber: {{userid}}
+-
+add: homeDirectory
+homeDirectory: /home/{{username}}
+-
+add: gidNumber
+gidNumber: {{groupid}}
+-
+add: loginShell
+loginShell: {{shell}}
